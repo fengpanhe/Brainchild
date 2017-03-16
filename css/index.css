@@ -1,0 +1,138 @@
+*{
+    margin: 0;
+    padding: 0;
+    color: white;
+    font-family: "Hiragino Sans GB", "Microsoft YaHei","WenQuanYi Micro Hei", sans-serif;
+}
+/*背景图*/
+#background-img{
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100vh;
+    overflow: hidden;
+    background-image: url("../img/working desk.png");
+    background-color: rgb(41,59,77);
+    z-index: -1;
+}
+
+/*Web字体*/
+@font-face{
+    font-family: "Lobster";
+    src: url("../fonts/Lobster-Regular.ttf");
+}
+
+#brand,#head-title{
+    font-family: "Lobster",serif;
+}
+
+/*导航栏*/
+nav,#brand,nav > ul,nav li{
+    display: inline-block;
+    height: 115px;
+}
+nav{
+    width: 100%;
+    position: relatve;
+}
+nav > ul{
+    float: right;
+    margin-right: 70px;
+}
+
+#brand{
+    line-height: 115px;
+    font-size: 25px;
+    margin-left: 60px;
+    cursor: pointer;
+}
+nav li{
+    margin-right: 60px;
+    font-size: 18px;
+    letter-spacing: 0.8px;
+    vertical-align: middle;
+}
+nav a{
+    line-height: 115px;
+    text-decoration: none;
+}
+#read-document{
+    /*background-color: rgb(68,114,196);*/
+    /*background-color: white;*/
+    border: 2px solid white;
+    /*color: rgb(68,114,196);*/
+    padding: 16px;
+    border-radius: 10px;
+    box-shadow: 0px 5px 9px rgb(30,30,30);
+    transition: all,0.2s;
+}
+
+/*中间部分*/
+#center-block{
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%,-50%);
+    text-align: center;
+}
+#head-title{
+    font-size: 120px;
+    /*font-size:300%;*/
+}
+#center-block p{
+    font-size: 25px;
+    letter-spacing: 4px;
+    margin-bottom: 50px;
+}
+#btn-set button{
+    padding: 25px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    border-radius: 7px;
+    font-size: 20px;
+    margin-right: 40px;
+    border: none;
+    box-shadow: 0px 3px 9px rgb(30,30,30);
+    cursor: pointer;
+}
+#btn-set button:focus{
+    outline: none;
+}
+#create-mindmap{
+    background-color: rgb(235,86,92);
+}
+#create-mindmap:hover{
+    background-color: rgb(215,66,72);
+}
+#join-work{
+    background-color: rgb(51,122,183);
+}
+#join-work:hover{
+    background-color: rgb(31,102,163);
+}
+
+/*导航栏hover效果*/
+.hover-underline{
+    position: relative;
+}
+.hover-underline:before{
+    content:" ";
+    display: block;
+    border-bottom: 3px solid white;
+    /*border-bottom: 3px solid rgb(235,86,92);*/
+    position: absolute;
+    left: 50%;
+    top: 5px;
+    width: 0;
+    height: 100%;
+    transition: width 0.2s,left 0.2s;
+}
+.hover-underline:hover:before{
+    width: 100%;
+    left: 0;
+}
+#read-document:hover{
+    border-color: rgb(68,114,196);
+    background-color: rgb(68,114,196);
+}

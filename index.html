@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>Online Mindmap</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link href="css/index.css" rel="stylesheet">
+        <link href="css/room_info.css" rel="stylesheet">
+        <link rel="stylesheet" href="css/font-awesome.min.css"/>
+        <script src="js/create_room.js"></script>
+        <!--<link rel="stylesheet" href="//cdn.bootcss.com/font-awesome/4.2.0/css/font-awesome.min.css"/>-->
+    </head>
+    <body>
+        <div class="mask"></div>
+        <div class="float-out-div">
+            <div class="fod-title">这是一个浮出层</div>
+            <div class="fod-container">这是一个浮出层
+                <div class="fod-button-container">
+                    <button class="fod-button">确定</button>
+                    <button class="fod-button">取消</button>
+                </div>
+            </div>
+        </div>
+
+        <div id="background-img"></div>
+        <nav>
+            <span id="brand"><i class="fa fa-superpowers"></i> Brainchild</span>
+            <ul>
+                <li><a href="#" class="hover-underline">发现</a></li>
+                <li><a class="hover-underline" target="_blank" href="https://github.com/HE1HE/Brainchild">GITHUB</a></li>
+                <li><a href="#" id="read-document">阅读文档</a></li>
+            </ul>
+        </nav>
+        <div id="center-block">
+            <span id="head-title">Brainchild</span>
+            <p>一个基于思维导图的合作式创意孵化平台</p>
+            <div id="btn-set">
+                <button id="create-mindmap" class="create-fod"><i class="fa fa-paper-plane"></i> 创建导图</button>
+                <button id="join-work"><i class="fa fa-sign-in"></i> 加入工作</button>
+            </div>
+        </div>
+    </body>
+</html>
