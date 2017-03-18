@@ -4,16 +4,18 @@ import tornado.httpserver
 import tornado.ioloop
 import tornado.options
 
+import random
+import string
 
-class room(object):
-    roomID = 000000
+class Room(object):
+    roomID = ""
     mindMap = ""
     callbacks = []
 
-    def __init__(self,roomID,mindMap,callbacks):
+    def __init__(self,roomID,mindMap):
         self.roomID = roomID
         self.mindMap = mindMap
-        self.callbacks.append(callbacks)
+        # self.callbacks.append(callbacks)
 
     def addCallback(self,callback):
         self.callbacks.append(callback)
@@ -23,26 +25,30 @@ class room(object):
 
     def updateMindMap(self,mindMap):
         self.mindMap = mindMap
+        self.notifyCallbacks()
 
-    def get
+    def getMindMap(self):
+        return self.MindMap
 
-class MindMaps(object):
-    mapCount = 1
-    maps = {
-        "000000" : "json"
-    }
-    callbacks = []
+    def notifyCallbacks(self):
+        for callback in self.callbacks:
+            callback(self.getMindMap())
 
-    def register(self, callback):
-        self.callbacks.append(callback)
+class Rooms(object):
+    roomCount = 0
+    rooms = {}
 
-    def unregister(self, callback):
-        self.callbacks.remove(callback)
+    def createRoom(self):
+        roomId = ""
+        while True:
+            for i in range(0,6):
+                roomId = roomId + random.choice('0123456789')
+            if not (roomId in self.rooms):
+                break
+        self.rooms[roomId] = Room(roomId, "")
+        return roomId
 
-    def createMindMap(self):
-        return 
-
-    def deleteMindMap(self, mapID):
+    def deleteRoom(self, mapID):
         self.maps.pop(mapID)
 
     
@@ -56,6 +62,19 @@ class IntexHandler(tornado.web.RequestHandler):
 class LoginHandler(tornado.web.RequestHandler):
     def get(self):
         self.render("./index.html")
+
+class mapStatusHandler(tornado.websocket.WebSocketHandler):
+    def open(self):
+        self.application.shoppingCart.register(self.callback)
+
+    def on_close(self):
+        self.application.shoppingCart.unregister(self.callback)
+
+    def on_message(self, message):
+        pass
+        
+    def callback(self, mindMap):
+        self.write_message('{"inventoryCount":"%d"}' % count)
 
 class Application(tornado.web.Application):
     def __init__(self):
