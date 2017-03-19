@@ -12,7 +12,7 @@
     width: 100%;
     height: 100vh;
     overflow: hidden;
-    background-image: url("../img/working desk.png");
+    background-image: url("../img/working desk.jpg");
     background-color: rgb(41,59,77);
     z-index: -1;
 }
@@ -116,7 +116,7 @@ nav a{
 .hover-underline{
     position: relative;
 }
-.hover-underline:before{
+.hover-underline::before{
     content:" ";
     display: block;
     border-bottom: 3px solid white;
@@ -128,7 +128,7 @@ nav a{
     height: 100%;
     transition: width 0.2s,left 0.2s;
 }
-.hover-underline:hover:before{
+.hover-underline:hover::before{
     width: 100%;
     left: 0;
 }

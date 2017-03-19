@@ -1,0 +1,85 @@
+.float-out-div{
+    /*display: none;*/
+    width: 400px;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%,-50%);
+    font-family: "Hiragino Sans GB", "Microsoft YaHei","WenQuanYi Micro Hei", sans-serif;
+    z-index: 100;
+    background-color: white;
+}
+.float-out-div *{
+    color: black;
+}
+.fod-title{
+    text-align: center;
+    color: rgb(68,114,196);
+    margin-top: 25px;
+    margin-bottom: 25px;
+    font-size: 25px;
+    padding: 8px;
+}
+.fod-container{
+    text-align: center;
+    width: 100%;
+}
+.fod-container form{
+    width: 65%;
+    display: inline-block;
+    text-align: left;
+}
+.fod-container form input,.fod-container form textarea{
+    box-sizing: border-box;
+    width: 100%;
+    margin-bottom: 20px;
+    margin-top: 8px;
+    padding: 8px;
+    border: 1px solid #e3e3e3;
+}
+.fod-container form label{
+    color: #333;
+}
+#topic-intro{
+    height: 200px;
+}
+.fod-button-container{
+    display: inline-block;
+    width: 65%;
+}
+.fod-button{
+    width: 100%;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    border-radius: 5px;
+    font-size: 13px;
+    margin-right: 10px;
+    margin-bottom: 10px;
+    border: none;
+    color: white;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+.fod-btn-confirm{
+    background-color: rgb(68,114,196);
+}
+.fod-btn-confirm:hover{
+    background-color: rgb(48,94,176);
+    box-shadow: 0px 3px 9px rgb(30,30,30);
+}
+.fod-btn-cancel{
+    background-color: rgb(235,86,92);
+}
+.fod-btn-cancel:hover{
+    background-color: rgb(215,66,72);
+    box-shadow: 0px 3px 9px rgb(30,30,30);
+}
+
+#fod-mask{
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0,0,0,0.7);
+    position: fixed;
+    display: none;
+    z-index: 99;
+}
