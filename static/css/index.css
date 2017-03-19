@@ -13,6 +13,7 @@
     height: 100vh;
     overflow: hidden;
     background-image: url("../img/working desk.jpg");
+    background-size: cover;
     background-color: rgb(41,59,77);
     z-index: -1;
 }
@@ -58,10 +59,7 @@ nav a{
     text-decoration: none;
 }
 #read-document{
-    /*background-color: rgb(68,114,196);*/
-    /*background-color: white;*/
     border: 2px solid white;
-    /*color: rgb(68,114,196);*/
     padding: 16px;
     border-radius: 10px;
     box-shadow: 0px 5px 9px rgb(30,30,30);
@@ -124,13 +122,13 @@ nav a{
     position: absolute;
     left: 50%;
     top: 5px;
-    width: 0;
+    width: 0%;
     height: 100%;
     transition: width 0.2s,left 0.2s;
 }
 .hover-underline:hover::before{
     width: 100%;
-    left: 0;
+    left: 0%;
 }
 #read-document:hover{
     border-color: rgb(68,114,196);
