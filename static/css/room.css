@@ -1,0 +1,144 @@
+*{
+    margin: 0;
+    padding: 0;
+    font-family: "Hiragino Sans GB", "Microsoft YaHei","WenQuanYi Micro Hei", sans-serif;
+}
+
+li{
+    list-style: none;
+}
+/*Web字体*/
+@font-face{
+    font-family: "Lobster";
+    src: url("../fonts/Lobster-Regular.ttf");
+}
+#brand,#head-title{
+    font-family: "Lobster",serif;
+}
+
+/*导航栏*/
+nav,#brand,nav > ul,nav li{
+    display: inline-block;
+    height: 60px;
+}
+nav{
+    width: 100%;
+    position: relatve;
+    /*box-shadow: 0 3px 4px #888888;*/
+    border-bottom: 1px solid rgb(236, 237, 240);
+}
+nav > ul{
+    float: right;
+    margin-right: 30px;
+}
+
+#brand{
+    line-height: 60px;
+    font-size: 20px;
+    margin-left: 60px;
+    cursor: pointer;
+}
+nav li{
+    margin-right: 30px;
+    font-size: 16px;
+    letter-spacing: 0.8px;
+    vertical-align: middle;
+}
+nav a{
+    line-height: 60px;
+    text-decoration: none;
+    color: rgb(68, 114, 196);
+}
+#read-document{
+    background-color: rgb(68,114,196);
+    color: white;
+    padding: 12px;
+    border-radius: 10px;
+    /*box-shadow: 0px 5px 9px rgb(30,30,30);*/
+    transition: all,0.2s;
+}
+/*导航栏hover效果*/
+#read-document:hover{
+    background-color: rgb(48, 94, 176);
+}
+.hover-underline{
+    position: relative;
+}
+.hover-underline::before{
+    content:" ";
+    display: block;
+    border-bottom: 2px solid rgb(68, 114, 196);
+    /*border-bottom: 3px solid rgb(235,86,92);*/
+    position: absolute;
+    left: 50%;
+    top: 5px;
+    width: 0%;
+    height: 100%;
+    transition: width 0.2s,left 0.2s;
+}
+.hover-underline:hover::before{
+    width: 100%;
+    left: 0%;
+}
+
+/*工作区布局*/
+#working-area{
+    width: 100%;
+    height: calc(100vh - 61px);
+    background-color: rgb(252,252,252);
+    position: relative;
+    box-sizing: border-box;
+    /*padding-top: 40px;*/
+}
+.info-div{
+    width: 25%;
+    box-shadow: 0 0px 21px #9f9f9f;
+    border-radius: 4px;
+    position: absolute;
+    right: 40px;
+    padding: 10px;
+    overflow: auto;
+    /*border: 2px solid rgb(68,114,196);*/
+}
+.info-div p{
+    padding-bottom: 5px;
+    border-bottom: 2px solid rgb(68, 114, 196);
+    margin-bottom: 5px;
+}
+.info-div p span{
+    color: rgb(68, 114, 196);
+    /*font-weight: bold;*/
+    font-size: 25px;
+}
+.info-div{
+    color: rgb(70,70,70);
+    font-size: 16px;
+    line-height: 1.6;
+}
+#topic-container{
+    height: 25%;
+    top: 40px;
+}
+#contributor-container{
+    height: 20%;
+    top: calc( 80px + 25% );
+}
+#news-container{
+    height: 38%;
+    top: calc( 120px + 45% );
+}
+
+/*参与成员列表*/
+#contributor-container li{
+    display: inline-block;
+    margin-right: 10px;
+}
+.admin{
+    color: rgb(235,86,92);
+    /*color: rgb(245,205,32);*/
+    /*color: red;*/
+    font-weight: bold;
+}
+.admin:after{
+    content:"(Admin)";
+}
