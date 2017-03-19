@@ -36,6 +36,7 @@
     margin-top: 8px;
     padding: 8px;
     border: 1px solid #e3e3e3;
+    border-radius: 5px;
 }
 .fod-container form label{
     color: #333;
