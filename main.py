@@ -7,78 +7,102 @@ import tornado.options
 import random
 import string
 
-class Room(object):
-    roomID = ""
-    mindMap = ""
-    callbacks = []
 
-    def __init__(self,roomID,mindMap):
-        self.roomID = roomID
-        self.mindMap = mindMap
+class User(object):
+    user_name = ""
+    callback = ""
+
+    def __init__(self, name, callback):
+        self.user_name = name
+        self.callback = callback
+
+    def get_callback(self):
+        return self.callback
+
+
+class Room(object):
+    room_id = ""
+    room_name = ""
+    room_des = ""
+    mind_map = ""
+    # callbacks = []
+    users = []
+
+    def __init__(self, room_id, room_name, room_des, mind_map):
+        self.room_id = room_id
+        self.room_name = room_name
+        self.room_des = room_des
+        self.mind_map = mind_map
         # self.callbacks.append(callbacks)
 
-    def addCallback(self,callback):
-        self.callbacks.append(callback)
+    def add_user(self, user):
+        self.users.append(user)
 
-    def removeCallback(self,callback):
-        self.callbacks.remove(callback)
+    def remove_user(self, user):
+        self.users.remove(user)
 
-    def updateMindMap(self,mindMap):
-        self.mindMap = mindMap
-        self.notifyCallbacks()
+    def update_mind_map(self, mind_map):
+        self.mind_map = mind_map
+        self.notify_callbacks()
 
-    def getMindMap(self):
-        return self.MindMap
+    def get_mind_map(self):
+        return self.mind_map
 
-    def notifyCallbacks(self):
-        for callback in self.callbacks:
-            callback(self.getMindMap())
+    def notify_callbacks(self):
+        for user in self.users:
+            callback = user.get_callback()
+            callback(self.get_mind_map())
+
 
 class Rooms(object):
     roomCount = 0
     rooms = {}
 
-    def createRoom(self):
-        roomId = ""
+    def create_room(self, room_name, room_des, mind_map):
+        room_id = ""
         while True:
-            for i in range(0,6):
-                roomId = roomId + random.choice('0123456789')
-            if not (roomId in self.rooms):
+            for i in range(0, 6):
+                room_id = room_id + random.choice('0123456789')
+            if not (room_id in self.rooms):
                 break
-        self.rooms[roomId] = Room(roomId, "")
-        return roomId
+        self.rooms[room_id] = Room(room_id, room_name, room_des, mind_map)
+        self.roomCount += 1
+        return room_id
 
-    def deleteRoom(self, mapID):
-        self.maps.pop(mapID)
-
-    
-    
+    def delete_room(self, room_id):
+        self.rooms.pop(room_id)
+        self.roomCount -= 1
 
 
 class IntexHandler(tornado.web.RequestHandler):
+
     def get(self):
         self.render("./index.html")
+
 
 class LoginHandler(tornado.web.RequestHandler):
     def get(self):
         self.render("./index.html")
 
+
 class mapStatusHandler(tornado.websocket.WebSocketHandler):
     def open(self):
-        self.application.shoppingCart.register(self.callback)
+        self.application
+        # self.application.rooms_manage.rooms[input]
 
     def on_close(self):
-        self.application.shoppingCart.unregister(self.callback)
+        self.application.rooms.unregister(self.callback)
 
     def on_message(self, message):
         pass
         
     def callback(self, mindMap):
-        self.write_message('{"inventoryCount":"%d"}' % count)
+        self.write_message('{"inventoryCount":"%d"}')
+
 
 class Application(tornado.web.Application):
     def __init__(self):
-
+        rooms_manage = Rooms()
         handlers = [
             (r'/', IntexHandler),
             (r'/index', IntexHandler),
