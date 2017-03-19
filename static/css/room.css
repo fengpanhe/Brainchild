@@ -23,7 +23,7 @@ nav,#brand,nav > ul,nav li{
 }
 nav{
     width: 100%;
-    position: relatve;
+    position: relative;
     /*box-shadow: 0 3px 4px #888888;*/
     border-bottom: 1px solid rgb(236, 237, 240);
 }
