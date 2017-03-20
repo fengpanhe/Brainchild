@@ -23,6 +23,8 @@ function initFODs(){
 				body.removeChild(floatOutDiv);
 			}
 			// to do:向服务器发送创建房间的信息和请求
+			var params = 'id=' + id + '&roomTitle=' + roomTitle + '&topicIntro=' + topicIntro;
+			createRoomRequest(params);
 			// to do:跳转到工作界面
 		}
 		/*在创建房间信息输入页面点击取消按钮*/
@@ -55,6 +57,8 @@ function initFODs(){
 				body.removeChild(floatOutDiv);
 			}
 			// to do:向服务器发送创建房间的信息和请求
+			var params = 'id=' + id + '&roomNumber=' + roomNumber + '&personalInfo=' + personalInfo;
+			createRoomRequest(params);
 			// to do:跳转到工作界面
 		}
 		/*在创建房间信息输入页面点击取消按钮*/

@@ -5,6 +5,7 @@ import tornado.ioloop
 import tornado.options
 
 import random
+import json
 import string
 
 
@@ -22,16 +23,16 @@ class User(object):
 
 class Room(object):
     room_id = ""
-    room_name = ""
-    room_des = ""
+    room_title = ""
+    topic_intro = ""
     mind_map = ""
     # callbacks = []
     users = []
 
-    def __init__(self, room_id, room_name, room_des, mind_map):
+    def __init__(self, room_id, room_title, topic_intro, mind_map):
         self.room_id = room_id
-        self.room_name = room_name
-        self.room_des = room_des
+        self.room_title = room_title
+        self.topic_intro = topic_intro
         self.mind_map = mind_map
         # self.callbacks.append(callbacks)
 
@@ -58,14 +59,15 @@ class Rooms(object):
     roomCount = 0
     rooms = {}
 
-    def create_room(self, room_name, room_des, mind_map):
+    def create_room(self, room_title, topic_intro, mind_map):
+        print("create_room:  room_title:" + room_title + " topic_intro:" + topic_intro + " mind_map:" + mind_map)
         room_id = ""
         while True:
             for i in range(0, 6):
                 room_id = room_id + random.choice('0123456789')
             if not (room_id in self.rooms):
                 break
-        self.rooms[room_id] = Room(room_id, room_name, room_des, mind_map)
+        self.rooms[room_id] = Room(room_id, room_title, topic_intro, mind_map)
         self.roomCount += 1
         return room_id
 
@@ -85,6 +87,30 @@ class LoginHandler(tornado.web.RequestHandler):
         self.render("./index.html")
 
 
+class CreateRoomHandler(tornado.web.RequestHandler):
+    def post(self):
+        returnVal = dict()
+        user_id = self.get_argument("id")
+        room_number = self.get_argument("roomNumber")
+        personal_info = self.get_argument("personalInfo")
+        print("CreateRoomHandler:  user_id:" + user_id + " room_number:" + room_number + " personal_info:" + personal_info)
+        # room_id = self.application.rooms_manage.(room_title, topic_intro, "")
+        returnVal["returnCode"] = 1
+        # returnVal["roomId"] = room_id
+        self.write(json.dumps(returnVal))
+
+class JoinRoomHandler(tornado.web.RequestHandler):
+    def post(self):
+        returnVal = dict()
+        user_id = self.get_argument("id")
+        room_title = self.get_argument("roomTitle")
+        topic_intro = self.get_argument("topicIntro")
+        print("CreateRoomHandler:  user_id:" + user_id + " room_title:" + room_title + " topic_intro:" + topic_intro)
+        room_id = self.application.rooms_manage.create_room(room_title, topic_intro, "")
+        returnVal["returnCode"] = 1
+        returnVal["roomId"] = room_id
+        self.write(json.dumps(returnVal))
+
 class mapStatusHandler(tornado.websocket.WebSocketHandler):
     def open(self):
         self.application
@@ -102,11 +128,13 @@ class mapStatusHandler(tornado.websocket.WebSocketHandler):
 
 class Application(tornado.web.Application):
     def __init__(self):
-        rooms_manage = Rooms()
+        self.rooms_manage = Rooms()
         handlers = [
             (r'/', IntexHandler),
             (r'/index', IntexHandler),
-            (r'/login', LoginHandler)
+            # (r'/login', LoginHandler),
+            (r'/createRoom', CreateRoomHandler),
+            (r'/joinRoom', JoinRoomHandler)
         ]
 
         settings = {
@@ -117,7 +145,7 @@ class Application(tornado.web.Application):
 
 if __name__ == '__main__':
     tornado.options.parse_command_line()
-
+    print("开始监听")
     app = Application()
     server = tornado.httpserver.HTTPServer(app)
     server.listen(8000)
