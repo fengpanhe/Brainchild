@@ -1,78 +1,50 @@
 function createRoomRequest(params) {
-    // var xmlhttp;
-    // if (window.XMLHttpRequest) {
-    //     xmlhttp = new XMLHttpRequest();
-    // } else {
-    //     xmlhttp = new ActiveXObject('Microsoft.XMLHTTP');
-    // }
-
-    // xmlhttp.open('POST', '/createRoom');
-    // xmlhttp.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
-    // xmlhttp.send(params);
-    // xmlhttp.onreadystatechange = function () {
-    //     if ((xmlhttp.readyState === 4) && (xmlhttp.status === 200)) {
-    //         var res = JSON.parse(xmlhttp.responseText);
-    //         switch (res.returnCode) {
-    //             case 1:
-    //                 alert('创建成功: 房间ID为' + res.roomId);
-    //                 console.log(res.roomId);
-    //                 id = params.slice(params.search('=') + 1, params.search('&'));
-    //                 requestMapStatus(res.roomId, id);
-    //                 return res.roomId;
-    //             case 0:
-    //                 alert('创建失败');
-    //                 return false;
-    //             default:
-    //                 alert('未知错误');
-    //                 return false;
-    //         }
-    //     }
-    // }
     console.log(params);
     $.ajax({
         type: 'POST',
-        url: "/createRoom", 
+        url: "/createRoom",
         data: params,
         dataType: 'json',
-        success: function(responseData, textStatus, jqXHR) { 
+        success: function (responseData, textStatus, jqXHR) {
             console.log("make success");
             console.log(responseData);
-        },          
-        error: function(responseData, textStatus, errorThrown) {
+
+            switch (responseData['returnCode']) {
+                case 1:
+                    alert('创建成功: 房间ID为' + responseData['roomId']);
+                    console.log(responseData['roomId']);
+                    // id = params.slice(params.search('=') + 1, params.search('&'));
+                    requestMapStatus(responseData['roomId'], params['id']);
+                    return responseData['roomId'];
+                case 0:
+                    alert('创建失败');
+                    return false;
+                default:
+                    alert('未知错误');
+                    return false;
+            }
+        },
+        error: function (responseData, textStatus, errorThrown) {
             console.log("make error");
-                 alert('POST failed.');
+            alert('POST failed.');
         }
     });
-
-
-
-/*
-    $.ajax({
-        type: 'POST',
-        url: '/createRoom',
-        data: params,
-        dataType:'json'
-    });
-    */
 }
 
 
 
 function joinRoomRequest(params) {
-    var xmlhttp;
-    if (window.XMLHttpRequest) {
-        xmlhttp = new XMLHttpRequest();
-    } else {
-        xmlhttp = new ActiveXObject('Microsoft.XMLHTTP');
-    }
+    console.log(params);
+    $.ajax({
+        type: 'POST',
+        url: "/joinRoom",
+        data: params,
+        dataType: 'json',
+        success: function (responseData, textStatus, jqXHR) {
+            console.log("make success");
+            console.log(responseData);
 
-    xmlhttp.open('POST', '/joinRoom');
-    xmlhttp.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
-    xmlhttp.send(params);
-    xmlhttp.onreadystatechange = function () {
-        if ((xmlhttp.readyState === 4) && (xmlhttp.status === 200)) {
-            var res = JSON.parse(xmlhttp.responseText);
-            switch (res.returnCode) {
+            switch (responseData['returnCode']) {
                 case 1:
                     alert('成功加入');
                     return true;
@@ -83,8 +55,12 @@ function joinRoomRequest(params) {
                     alert('未知错误');
                     return false;
             }
+        },
+        error: function (responseData, textStatus, errorThrown) {
+            console.log("make error");
+            alert('POST failed.');
         }
-    }
+    });
 }
 
 function requestMapStatus(roomId, userName) {
@@ -98,4 +74,35 @@ function requestMapStatus(roomId, userName) {
         alert(evt.data);
     };
     websocket.onerror = function (evt) {};
+}
+
+
+function updateMindMap(params) {
+    console.log(params);
+    $.ajax({
+        type: 'POST',
+        url: "/updateMindMap",
+        data: params,
+        dataType: 'json',
+        success: function (responseData, textStatus, jqXHR) {
+            console.log("make success");
+            console.log(responseData);
+
+            switch (responseData['returnCode']) {
+                case 1:
+                    alert('成功加入');
+                    return true;
+                case 0:
+                    alert('加入失败');
+                    return false;
+                default:
+                    alert('未知错误');
+                    return false;
+            }
+        },
+        error: function (responseData, textStatus, errorThrown) {
+            console.log("make error");
+            alert('POST failed.');
+        }
+    });
 }

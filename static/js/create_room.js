@@ -66,7 +66,12 @@ function initFODs() {
 			}
 			// to do:向服务器发送创建房间的信息和请求
 			console.log("b");
-			var params = 'id=' + id + '&roomNumber=' + roomNumber + '&personalInfo=' + personalInfo;
+			var params = {
+				'id': id,
+				'roomNumber': roomNumber,
+				'personalInfo': personalInfo
+
+			};
 			joinRoomRequest(params);
 			// to do:跳转到工作界面
 		}
