@@ -28,14 +28,35 @@ function createRoomRequest(params) {
     //         }
     //     }
     // }
+    console.log(params);
+    $.ajax({
+        type: 'POST',
+        url: "/createRoom", 
+        data: params,
+        dataType: 'json',
+        success: function(responseData, textStatus, jqXHR) { 
+            console.log("make success");
+            console.log(responseData);
+        },          
+        error: function(responseData, textStatus, errorThrown) {
+            console.log("make error");
+                 alert('POST failed.');
+        }
+    });
 
+
+
+/*
     $.ajax({
         type: 'POST',
         url: '/createRoom',
         data: params,
         dataType:'json'
     });
+    */
 }
+
+
 
 function joinRoomRequest(params) {
     var xmlhttp;

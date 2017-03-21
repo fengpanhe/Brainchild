@@ -24,7 +24,12 @@ function initFODs() {
 			}
 			// to do:向服务器发送创建房间的信息和请求
 			console.log("c");
-			var params = 'id=' + id + '&roomTitle=' + roomTitle + '&topicIntro=' + topicIntro;
+			var params = {
+				'id': id,
+				'roomTitle': roomTitle,
+				'topicIntro': topicIntro
+
+			};
 			var roomId = createRoomRequest(params);
 			
 			// to do:跳转到工作界面

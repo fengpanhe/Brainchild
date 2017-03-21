@@ -10,8 +10,9 @@ import string
 import IPython
 
 import logging
+import sys
 
-logging.basicConfig(filename='logger.log',level=logging.INFO)
+logging.basicConfig(stream=sys.stdout, level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 class User(object):
@@ -198,7 +199,8 @@ class Application(tornado.web.Application):
 
         settings = {
             'template_path': 'templates',
-            'static_path': 'static'
+            'static_path': 'static',
+            'debug': True
         }
         tornado.web.Application.__init__(self, handlers, **settings)
 
