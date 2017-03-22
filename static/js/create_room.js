@@ -68,7 +68,7 @@ function initFODs() {
 			console.log("b");
 			var params = {
 				'id': id,
-				'roomNumber': roomNumber,
+				'roomId': roomNumber,
 				'personalInfo': personalInfo
 
 			};

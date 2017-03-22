@@ -46,6 +46,7 @@ function joinRoomRequest(params) {
 
             switch (responseData['returnCode']) {
                 case 1:
+                    requestMapStatus(params['roomId'], params['id']);
                     alert('成功加入');
                     return true;
                 case 0:
@@ -71,7 +72,9 @@ function requestMapStatus(roomId, userName) {
 
     websocket.onopen = function (evt) {};
     websocket.onmessage = function (evt) {
-        alert(evt.data);
+        var returnData = JSON.parse(evt.data);
+        console.log(returnData);
+        alert(returnData["mindMap"]);
     };
     websocket.onerror = function (evt) {};
 }
@@ -90,7 +93,7 @@ function updateMindMap(params) {
 
             switch (responseData['returnCode']) {
                 case 1:
-                    alert('成功加入');
+                    alert('成功更新');
                     return true;
                 case 0:
                     alert('加入失败');

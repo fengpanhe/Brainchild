@@ -12,8 +12,15 @@ import IPython
 import logging
 import sys
 
-logging.basicConfig(stream=sys.stdout, level=logging.INFO)
-logger = logging.getLogger(__name__)
+logging.basicConfig(stream=sys.stdout)
+logger = logging.getLogger()
+handler = logging.StreamHandler()
+formatter = logging.Formatter(
+        '%(asctime)s %(name)s %(levelname)s %(pathname)s  %(lineno)d %(funcName)s %(message)s')
+handler.setFormatter(formatter)
+logger.addHandler(handler)
+
+
 
 class User(object):
     user_name = ""
@@ -44,13 +51,21 @@ class Room(object):
 
     def add_user(self, user):
         self.users.append(user)
+        logger.info("roomId:" + self.room_id + "userNum: " + str(len(self.users)))
+        return True
 
     def remove_user(self, user):
         self.users.remove(user)
+        logger.info("roomId:" + self.room_id + "userNum: " + str(len(self.users)))
 
-    def update_mind_map(self, mind_map):
-        self.mind_map = mind_map
-        self.notify_callbacks()
+    def update_mind_map(self, mind_map,user_id):
+        for user in self.users:
+            if user_id == user.user_name:
+                self.mind_map = mind_map
+                self.notify_callbacks()
+                return True
+        return False
+        
 
     def get_mind_map(self):
         return self.mind_map
@@ -66,10 +81,6 @@ class Rooms(object):
     rooms = {}
 
     def create_room(self, room_title, topic_intro, mind_map):
-
-        print("create_room:  room_title:" + room_title + " topic_intro:" + topic_intro + " mind_map:" + mind_map)
-        logger.info("Rooms--create_room:  room_title:" + room_title + " topic_intro:" + topic_intro + " mind_map:" + mind_map)
-
         room_id = ""
         while True:
             for i in range(0, 6):
@@ -78,25 +89,33 @@ class Rooms(object):
                 break
         self.rooms[room_id] = Room(room_id, room_title, topic_intro, mind_map)
         self.roomCount += 1
+        logger.info("roomNum: " + str(len(self.rooms)))
         return room_id
 
     def delete_room(self, room_id):
-        logger.info("Rooms.delete_room:" + room_id)
+        logger.info("room_id:" + room_id)
         self.rooms.pop(room_id)
         self.roomCount -= 1
+        logger.info("roomNum: " + str(len(self.rooms)))
 
-    def update_mind_map(self,room_id,mind_map):
-        logger.info("Rooms.update_mind_map:" + room_id + " " + mind_map)
+    def update_mind_map(self,room_id,mind_map,user_id):
+        logger.info(room_id + " " + mind_map + " " + user_id)
         if not (room_id in self.rooms):
             return False
-        self.rooms[room_id].update_mind_map(mind_map)
-        return True
+        return self.rooms[room_id].update_mind_map(mind_map,user_id)
 
     def add_user(self,room_id,user):
-        logger.info("Rooms.add_user:" + room_id + " " + user.user_name)
+        logger.info(room_id + " " + user.user_name)
         if not (room_id in self.rooms):
             return False
         self.rooms[room_id].add_user(user)
+        return True
+
+    def remove_user(self, room_id, user):
+        logger.info(room_id + " " + user.user_name)
+        if not (room_id in self.rooms):
+            return False
+        self.rooms[room_id].remove_user(user)
         return True
 
 class IntexHandler(tornado.web.RequestHandler):
@@ -112,12 +131,13 @@ class LoginHandler(tornado.web.RequestHandler):
 class CreateRoomHandler(tornado.web.RequestHandler):
     def post(self):
         # IPython.embed()
-        logger.info("CreateRoomHandler")
-        returnVal = dict()
         user_id = self.get_body_argument("id")
         room_title = self.get_argument("roomTitle")
         topic_intro = self.get_argument("topicIntro")
-        print("CreateRoomHandler:  user_id:" + user_id + " room_title:" + room_title + " topic_intro:" + topic_intro)
+
+        logger.info(self.__class__.__name__ + ":user_id:" + user_id + " room_title:" + room_title + " topic_intro:" + topic_intro)
+
+        returnVal = dict()
         room_id = self.application.rooms_manage.create_room(room_title, topic_intro, "")
         returnVal["returnCode"] = 1
         returnVal["roomId"] = room_id
@@ -126,12 +146,12 @@ class CreateRoomHandler(tornado.web.RequestHandler):
 
 class JoinRoomHandler(tornado.web.RequestHandler):
     def post(self):
-        logger.info("JoinRoomHandler")
+        
         returnVal = dict() 
         user_id = self.get_argument("id")
-        room_number = self.get_argument("roomNumber")
+        room_id = self.get_argument("roomId")
         personal_info = self.get_argument("personalInfo")
-        print("JoinRoomHandler:  user_id:" + user_id + " room_number:" + room_number + " personal_info:" + personal_info)
+        logger.info("JoinRoomHandler:  user_id:" + user_id + " room_id:" + room_id + " personal_info:" + personal_info)
         # room_id = self.application.rooms_manage.(room_title, topic_intro, "")
         returnVal["returnCode"] = 1
         # returnVal["roomId"] = room_id
@@ -144,7 +164,8 @@ class UpdateMapHandler(tornado.web.RequestHandler):
         returnVal = dict()
         room_id = self.get_argument("roomId")
         mind_map = self.get_argument("mindMap")
-        if not self.application.rooms_manage.update_mind_map(room_id,mind_map):
+        user_id = self.get_argument("userId")
+        if not self.application.rooms_manage.update_mind_map(room_id,mind_map,user_id):
             returnVal["returnCode"] = 0
         else:
             returnVal["returnCode"] = 1
@@ -153,13 +174,13 @@ class UpdateMapHandler(tornado.web.RequestHandler):
 
 class MapStatusHandler(tornado.websocket.WebSocketHandler):
     def open(self,input):
-        room_id = input.split('&')[0].split('=')[1]
+        self.room_id = input.split('&')[0].split('=')[1]
         user_name = input.split('&')[1].split('=')[1]
-        print("room_id = " + room_id + "user_name = " + user_name)
+        print("room_id = " + self.room_id + "user_name = " + user_name)
         self.user = User(user_name,self.callback)
         returnVal = dict()
         
-        if not self.application.rooms_manage.add_user(room_id,self.user):
+        if not self.application.rooms_manage.add_user(self.room_id,self.user):
             returnVal["returnCode"] = 0
         else:
             returnVal["returnCode"] = 1
@@ -168,6 +189,11 @@ class MapStatusHandler(tornado.websocket.WebSocketHandler):
         # self.application.rooms_manage.rooms[input]
 
     def on_close(self):
+        returnVal = dict()
+        if not self.application.rooms_manage.remove_user(self.room_id,self.user):
+            returnVal["returnCode"] = 0
+        else:
+            returnVal["returnCode"] = 1
         print("WebSocket closed")
         # self.application.rooms.unregister(self.callback)
 
