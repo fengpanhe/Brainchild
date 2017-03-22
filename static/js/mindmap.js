@@ -5,6 +5,7 @@ const ideaNodeMarginTop = 80;
 const navHeight = 61;
 var rootNode;
 var firstLayer;
+var user;
 
 function Layer(level){
     this.level = level;
@@ -39,47 +40,87 @@ function Node(title,contain){
         createIdeaOnMap(node);
     }
     this.removeNode = function(){
-        if(this.childNum === 0){
-            //无子节点，移除对应div
-            var curNodeDiv = document.querySelector("#"+this.id);
-            curNodeDiv.parentNode.removeChild(curNodeDiv);
-        }else{
-            //删除子节点
-            var childNum = this.childNum;
-            for(var n=1;n<=childNum;n++){
-                var childNode = this["child"+n];
-                var lineToChild = document.querySelector("#"+this.id+"-to-"+childNode.id);
-                lineToChild.parentNode.removeChild(lline);
+        //删除自己对应的div
+        var curNodeDiv = document.querySelector("#"+this.id);
+        curNodeDiv.parentNode.removeChild(curNodeDiv);
+        //删除父节点和自己的连线
+        var parNode = this.parentNode;
+        var lineFromPar = document.querySelector("#"+parNode.id+"-to-"+this.id);
+        lineFromPar.parentNode.removeChild(lineFromPar);
+        removeNodeInLayer(this.level,this.layerIndex);
+        if(this.childNum !== 0){
+            //有子节点删除子节点
+            while(this.childNum > 0){
+                var childNode = this.child1;
                 childNode.removeNode();
-                delete this["child"+n];
             }
-            //删除父节点和自己的连线
-            var parNode = this.parentNode;
-            var lineFromPar = document.querySelector("#"+parNode.id+"-to-"+this.id);
-            lineFromPar.parentNode.removeChild(lineFromPar);
-            //删除自己
+        }
+        //解除父子关系
+        var flag = 0;
+        for(var n=1;n<=parNode.childNum;n++){
+            if(parNode["child"+n].id === this.id && flag === 0)
+                flag = n;
+            if(flag > 0 && n > flag)
+                parNode["child"+(n-1)] = parNode["child"+n];
+        }
+        delete parNode["child"+(parNode.childNum--)];
+        //调整剩余节点的位置
+        adjustMindmap();
+    }
+}
+
+function removeNodeInLayer(level,layerIndex){
+    var curLayer = getLayer(level);
+    if(level === 1 )
+        return;
+    if(curLayer){
+        if(curLayer.childNum === 1)//当前层即将为空
+            delete curLayer.parentLayer.childLayer;
+        else{
+            for(var n=layerIndex+1;n<=curLayer.childNum;n++){
+                //调整layerIndex和id(div和line)
+                var id = "layer"+level+"-"+n;
+                var node = findNode(rootNode,id);
+                var parNode = node.parentNode;
+                var div = document.querySelector("#"+id);
+                var lineFromPar = document.querySelector("#"+parNode.id+"-to-"+id);
+                node.layerIndex --;
+                node.id = "layer"+level+"-"+(n-1);
+                div.id = node.id;
+                lineFromPar.id = parNode.id+"-to-"+node.id;
+                for(var k=1;k<=node.childNum;k++){
+                    var childNode = node["child"+k]; 
+                    var lineToChild = document.querySelector("#"+"layer"+level+"-"+(layerIndex+1)+"-to-"+childNode.id);
+                    lineToChild.id = node.id+"-to-"+childNode.id;
+                }
+            }
+            curLayer.childNum--;
+            //更新maxChildNum
+            if(curLayer.childNum+1 === firstLayer.maxChildNum){
+                firstLayer.maxChildNum--;
+                var layer = firstLayer;
+                while(layer){
+                    if(layer.childNum > firstLayer.maxChildNum)
+                        firstLayer.maxChildNum = layer.childNum;
+                    layer = layer.childLayer;
+                }
+            }
         }
     }
+}
     // var parentNode = findNode(rootNode,document.querySelector(".parent-idea").id);
     // this.level = parentNode.level + 1;
     // this.parentNode = parentNode;
     // parentNode["child" + ++parentNode.childNum] = this;
 
     
-}
 function initMindMap(){
-    // rootNode = {
-    //   level : 1,
-    //   childNum : 0,
-    //   layerIndex : 1,
-    //   id : "root-node",
-    //   title : document.querySelector("#topic-title").innerHTML,
-    //   contain : document.querySelector("#topic-intro").innerHTML  
-    // };
+    //to do:将当前页面的user信息保存到变量user中，测试直接用一个类来新建
+    user = new User("韩梅梅",0);
     rootNode = new Node(document.querySelector("#topic-title").innerHTML,document.querySelector("#topic-intro").innerHTML);
     firstLayer = {
         level : 1,
-        childNum : 0,
+        childNum : 1,
         maxChildNum : 1
     };
     createIdeaOnMap(rootNode);
@@ -120,7 +161,23 @@ function createIdeaOnMap(ideaNode){
     contain.innerHTML = ideaNode.contain;
     container.appendChild(contain);
     mindmap.appendChild(container);
+    var addBtn = document.createElement("button");
+    addBtn.className = "node-add-button";
+    addBtn.id = ideaNode.id+"-add-btn";
+    addBtn.innerHTML = "+";
+    addBtn.onclick = onClickAddIdea;
+    container.appendChild(addBtn);
     if(ideaNode.id !== "root-node"){       
+        console.log(user.getUserType());
+        if(user.getUserType() === 0){
+            //不为根节点且为管理员权限，为每个节点创建删除按钮
+            var removeBtn = document.createElement("button");
+            removeBtn.className = "node-remove-button";
+            removeBtn.id = ideaNode.id+"-remove-btn";
+            removeBtn.innerHTML = "-";
+            removeBtn.onclick = onClickRemoveIdea;
+            container.appendChild(removeBtn);
+        }
         //默认放到父节点正右方
         var parentDiv = document.querySelector("#"+ideaNode.parentNode.id);
         var parentDivRect = parentDiv.getBoundingClientRect();
@@ -143,6 +200,17 @@ function createIdeaOnMap(ideaNode){
     }
 }
 
+function onClickAddIdea(e){
+    //在点击了idea node上的添加按钮后的处理
+    //to do:创建float-out-div，用户填写表单，添加确认按钮和取消按钮事件处理程序
+}
+function onClickRemoveIdea(e){
+    //在点击了idea node上的删除按钮后的处理
+    var div = e.target.parentNode;
+    var node = findNode(rootNode,div.id);
+    node.removeNode();
+}
+
 function adjustMindmap(){
     //只有根节点，不用调整
     if(rootNode.childNum === 0)
@@ -158,7 +226,9 @@ function adjustMindmap(){
             var parNode = curNode.parentNode;
             var parId = parNode.id;
             var curNodeDiv = document.querySelector("#"+curId);
-            var top = (mindmapHeight - maxHeight)/2 + (ideaNodeHeight + ideaNodeMarginTop)*(n-1);
+            // var top = (mindmapHeight - maxHeight)/2 + (ideaNodeHeight + ideaNodeMarginTop)*(n-1);
+            var marginTop = (maxHeight - (curLayer.childNum)*ideaNodeHeight)/(curLayer.childNum + 1);
+            var top = (mindmapHeight - maxHeight)/2 + marginTop*n + ideaNodeHeight*(n-1);
             curNodeDiv.style.top = top + "px";
             // 调整和父节点连线的终点以及和子节点连线的起点
             var lineToParent = document.querySelector("#" + parId + "-to-" + curId);
@@ -187,4 +257,6 @@ window.onload = function(){
     newIdea2.insertNode(newIdea3);
     newIdea1.insertNode(newIdea4);
     newIdea1.insertNode(newIdea5);
+    // newIdea4.removeNode();
+    // newIdea2.removeNode();
 }

@@ -27,6 +27,39 @@
     padding: 8px;
     overflow: auto;
 }
+.node-add-button,.node-remove-button{
+    position: absolute;
+    top: 50%;
+    width: 45px;
+    height: 45px;
+    border-radius: 22.5px;
+    border: none;
+    opacity: 0;
+    color: white;
+    transition: opacity 0.2s;
+    font-size: 30px;
+    line-height: 45px;
+}
+.node-container:hover .node-add-button,.node-container:hover .node-remove-button{
+    opacity: 0.8;
+}
+.node-add-button:hover,.node-remove-button:hover{
+    /*opacity: 1.0;*/
+    cursor: pointer;
+}
+.node-add-button:focus,.node-remove-button:focus{
+    outline: none;
+}
+.node-add-button{
+    right: 0;
+    transform: translate(50%,-50%);
+    background-color: rgb(235,86,92);
+}
+.node-remove-button{
+    left: 0;
+    transform: translate(-50%,-50%);
+    background-color: rgb(51,122,183);
+}
 #root-node{
     position: absolute;
     top: 50%;
