@@ -319,8 +319,10 @@ function adjustMindmap(){
 }
 
 window.onload = function(){
+    console.log(window.localStorage.getItem("roomNumber"));
     initMindMap();
     initRoom();
+    // document.write("123");
     console.log(roomNumber);
     // var rootNodeDiv = document.querySelector("#"+rootNode.id);
     var newIdea1 = new Node("IDEA TITLE","劝君更尽一杯酒","a");

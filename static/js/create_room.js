@@ -23,13 +23,12 @@ function initFODs() {
 				body.removeChild(floatOutDiv);
 			}
 			// to do:向服务器发送创建房间的信息和请求
-			var roomWindow = window.open("./room.html");
-			var childDocument = roomWindow.document;
-			var p = childDocument.createElement("p");
-			p.className = "message";
-			p.id = "room-number-message";
-			p.innerHTML = "123";
-			childDocument.body.appendChild(p);
+			// var childDocument = roomWindow.document;
+			// var p = childDocument.createElement("p");
+			// p.className = "message";
+			// p.id = "room-number-message";
+			// p.innerHTML = "123";
+			// childDocument.body.appendChild(p);
 			// roomWindow.document.write("<p class=\"message\" id=\"room-number-message\">123</p>");
 			// roomWindow.roomNumber = "123";
 			var params = {
@@ -92,5 +91,12 @@ function initFODs() {
 }
 
 window.onload = function () {
+	var storage = window.localStorage;
+	localStorage.setItem("roomNumber","123");
+
+	var roomWindow = window.open("room.html");
+	roomWindow.onload = function(){
+		console.log(roomWindow.document);
+	}
 	initFODs();
 }

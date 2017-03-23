@@ -26,9 +26,8 @@ function initRoom(){
     if(msgBox){
         roomNumber = msgBox.innerHTML;
     }
+    console.log(roomNumber);
     
-    console.log(window.roomNumber);
-    // document.querySelector("#topic-intro").innerHTML = "[房间号"+roomNumber+"]:邀请同伴加入吧~";
     addNotice("邀请同伴加入吧~");
     //to do: 初始化成员列表
 }
