@@ -36,7 +36,7 @@ function initFODs() {
 				'roomTitle': roomTitle,
 				'topicIntro': topicIntro
 			};
-			// var roomId = createRoomRequest(params);
+			var roomId = createRoomRequest(params);
 			
 			// to do:跳转到工作界面
 		}
@@ -91,12 +91,12 @@ function initFODs() {
 }
 
 window.onload = function () {
-	var storage = window.localStorage;
-	localStorage.setItem("roomNumber","123");
+	// var storage = window.localStorage;
+	// localStorage.setItem("roomNumber","123");
 
-	var roomWindow = window.open("room.html");
-	roomWindow.onload = function(){
-		console.log(roomWindow.document);
-	}
+	// var roomWindow = window.open("room.html");
+	// roomWindow.onload = function(){
+	// 	console.log(roomWindow.document);
+	// }
 	initFODs();
 }

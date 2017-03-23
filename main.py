@@ -53,17 +53,36 @@ class Room(object):
     def add_user(self, user):
         self.users.append(user)
         logger.info("roomId:" + self.room_id + "userNum: " + str(len(self.users)))
+        params = {
+            'returnCode'   : 4,
+            'action'       : 'addUser',
+            'userId'       : user.user_name,
+            'userType'     : 1
+        }
+        self.notify_callbacks(params);
         return True
 
     def remove_user(self, user):
         self.users.remove(user)
         logger.info("roomId:" + self.room_id + "userNum: " + str(len(self.users)))
+        params = {
+            'returnCode'   : 4,
+            'action'       : 'removeUser',
+            'userId'       : user.user_name,
+            'userType'     : 1
+        }
+        self.notify_callbacks(params);
+        return True
 
     def update_mind_map(self, mind_map,user_id):
         for user in self.users:
             if user_id == user.user_name:
                 self.mind_map = mind_map
-                self.notify_callbacks()
+                params = {
+                    'returnCode'   : 2,
+                    'mindMap'      : mind_map
+                }
+                self.notify_callbacks(params)
                 return True
         return False
         
@@ -71,10 +90,10 @@ class Room(object):
     def get_mind_map(self):
         return self.mind_map
 
-    def notify_callbacks(self):
+    def notify_callbacks(self,params):
         for user in self.users:
             callback = user.get_callback()
-            callback(self.get_mind_map())
+            callback(params)
 
 
 class Rooms(object):
@@ -207,11 +226,11 @@ class MapStatusHandler(tornado.websocket.WebSocketHandler):
         # self.application.rooms_manage.rooms[message]
         # pass
         
-    def callback(self, mindMap):
-        returnVal = dict()
-        returnVal["returnCode"] = 2
-        returnVal["mindMap"] = mindMap
-        self.write_message(returnVal)
+    def callback(self, params):
+        # returnVal = dict()
+        # returnVal["returnCode"] = 2
+        # returnVal["mindMap"] = mindMap
+        self.write_message(params)
 
 
 class Application(tornado.web.Application):
