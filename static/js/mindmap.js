@@ -112,7 +112,15 @@ function removeNodeInLayer(level,layerIndex){
     
 function initMindMap(){
     //to do:将当前页面的user信息保存到变量user中，测试直接用一个类来新建
-    user = new User("韩梅梅",0);
+    var msgBox = document.querySelector("#user-id-message");
+    if(msgBox){
+        var userId = msgBox.innerHTML;
+    }
+    msgBox = document.querySelector("#user-type-message");
+    if(msgBox){
+        var userType = msgBox.innerHTML;
+    }
+    user = new User(userId,userType);
     rootNode = new Node(document.querySelector("#topic-title").innerHTML,document.querySelector("#topic-intro").innerHTML);
     firstLayer = {
         level : 1,
@@ -273,7 +281,10 @@ function onClickRemoveIdea(e){
     var node = findNode(rootNode,div.id);
     node.removeNode();
 }
-
+function removeIdeaNode(nodeId){
+    var node = findNode(nodeId);
+    node.removeNode();
+}
 function adjustMindmap(){
     //只有根节点，不用调整
     if(rootNode.childNum === 0)
@@ -310,6 +321,7 @@ function adjustMindmap(){
 window.onload = function(){
     initMindMap();
     initRoom();
+    console.log(roomNumber);
     // var rootNodeDiv = document.querySelector("#"+rootNode.id);
     var newIdea1 = new Node("IDEA TITLE","劝君更尽一杯酒","a");
     var newIdea2 = new Node("IDEA TITLE","西出阳关无故人","a");

@@ -228,3 +228,7 @@ svg{
     bottom: 0;
     left: 0;
 }
+
+.message{
+    /*display: hidden;*/
+}

@@ -14,7 +14,9 @@ function createRoomRequest(params) {
                     alert('创建成功: 房间ID为' + responseData['roomId']);
                     console.log(responseData['roomId']);
                     // id = params.slice(params.search('=') + 1, params.search('&'));
+                    var newWindowRef = window.open("localhost:8000/room")
                     requestMapStatus(responseData['roomId'], params['id']);
+                    
                     return responseData['roomId'];
                 case 0:
                     alert('创建失败');

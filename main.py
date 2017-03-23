@@ -39,14 +39,15 @@ class Room(object):
     room_title = ""
     topic_intro = ""
     mind_map = ""
-    # callbacks = []
+    creator_id = ""
     users = []
 
-    def __init__(self, room_id, room_title, topic_intro, mind_map):
+    def __init__(self, room_id, room_title, topic_intro, mind_map, creator_id):
         self.room_id = room_id
         self.room_title = room_title
         self.topic_intro = topic_intro
         self.mind_map = mind_map
+        self.creator_id = creator_id
         # self.callbacks.append(callbacks)
 
     def add_user(self, user):
@@ -80,14 +81,14 @@ class Rooms(object):
     roomCount = 0
     rooms = {}
 
-    def create_room(self, room_title, topic_intro, mind_map):
+    def create_room(self, room_title, topic_intro, mind_map, creator_id):
         room_id = ""
         while True:
             for i in range(0, 6):
                 room_id = room_id + random.choice('0123456789')
             if not (room_id in self.rooms):
                 break
-        self.rooms[room_id] = Room(room_id, room_title, topic_intro, mind_map)
+        self.rooms[room_id] = Room(room_id, room_title, topic_intro, mind_map, creator_id)
         self.roomCount += 1
         logger.info("roomNum: " + str(len(self.rooms)))
         return room_id
@@ -138,7 +139,7 @@ class CreateRoomHandler(tornado.web.RequestHandler):
         logger.info(self.__class__.__name__ + ":user_id:" + user_id + " room_title:" + room_title + " topic_intro:" + topic_intro)
 
         returnVal = dict()
-        room_id = self.application.rooms_manage.create_room(room_title, topic_intro, "")
+        room_id = self.application.rooms_manage.create_room(room_title, topic_intro, "",user_id)
         returnVal["returnCode"] = 1
         returnVal["roomId"] = room_id
         self.write(json.dumps(returnVal))
@@ -156,6 +157,10 @@ class JoinRoomHandler(tornado.web.RequestHandler):
         returnVal["returnCode"] = 1
         # returnVal["roomId"] = room_id
         self.write(json.dumps(returnVal))
+
+class RoomHandler(tornado.web.RequestHandler):
+    def get(self):
+        self.render("./room.html")
 
 
 class UpdateMapHandler(tornado.web.RequestHandler):
@@ -218,6 +223,7 @@ class Application(tornado.web.Application):
             # (r'/login', LoginHandler),
             (r'/createRoom', CreateRoomHandler),
             (r'/joinRoom', JoinRoomHandler),
+            (r'/room', RoomHandler),
             (r'/updateMindMap', UpdateMapHandler),
             (r'/status/(\w+\=\w+\&\w+\=\w+)', MapStatusHandler)
             

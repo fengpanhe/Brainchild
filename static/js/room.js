@@ -22,7 +22,9 @@ function initRoom(){
         }
     }
     //to do: 获取房间号
-    roomNumber = "4396";
+    roomNumber = document.querySelector("#room-number-message").innerHTML;
+    
+    console.log(window.roomNumber);
     // document.querySelector("#topic-intro").innerHTML = "[房间号"+roomNumber+"]:邀请同伴加入吧~";
     addNotice("邀请同伴加入吧~");
     //to do: 初始化成员列表
