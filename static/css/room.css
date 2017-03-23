@@ -98,6 +98,7 @@ nav a{
     position: absolute;
     left: 0;
     top: 0;
+    transition: transform 0.2s;
 }
 .info-div{
     width: 25%;
@@ -106,8 +107,12 @@ nav a{
     position: absolute;
     right: 40px;
     padding: 10px;
+    transition: right 0.4s;
+}
+#topic-intro,.info-div ul{
+    display: inline-block;
+    max-height: 80%;
     overflow: auto;
-    /*border: 2px solid rgb(68,114,196);*/
 }
 .info-div p{
     padding-bottom: 5px;
@@ -123,6 +128,34 @@ nav a{
     color: rgb(70,70,70);
     font-size: 16px;
     line-height: 1.6;
+}
+.info-div-btn{
+    width: 50px;
+    height: 50px;
+    line-height: 50px;
+    border-radius: 25px;
+    border: 1px solid white;
+    background-color: white;
+    opacity: 0.7;
+    box-shadow: 0 0px 21px #9f9f9f;
+    color: rgb(68, 114, 196);
+    font-size: 22px;
+    font-weight: bold;
+    
+    position: absolute;
+    top: calc(50% - 25px);
+    left: -25px;
+    /*transform: translateX(-50%);*/
+
+    transition: all 0.4s;
+    cursor: pointer;
+}
+.info-div-btn:hover{
+    border: 1px solid rgb(68, 114, 196);
+    opacity: 1;
+}
+.info-div-btn:focus{
+    outline: none;
 }
 #topic-container{
     height: 25%;
@@ -151,7 +184,40 @@ nav a{
 .admin:after{
     content:"(Admin)";
 }
+.me{
+    color: rgb(68, 114, 196);
+    font-weight: bold;
+}
+.me:after{
+    content:"(You)";
+}
+/*放大和缩小按钮*/
+#scale-map-expand,#scale-map-compress{
+    position: absolute;
+    left: 40px;
+    bottom: 30px;
+    color: white;
+    font-size: 25px;
 
+    width: 50px;
+    height: 50px;
+    line-height: 50px;
+    border-radius: 25px;
+    background-color: rgb(235,86,92);
+    cursor: pointer;
+    border: none;
+    transition: all 0.2s;
+    box-shadow: 0 0px 7px #afafaf;
+}
+#scale-map-expand:hover,#scale-map-compress:hover{
+    background-color: rgb(215,66,72);
+}
+#scale-map-expand{
+    left: 80px;
+}
+#scale-map-compress{
+    left: 160px;
+}
 /*svg*/
 svg{
     width: 100%;

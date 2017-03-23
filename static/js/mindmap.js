@@ -14,8 +14,9 @@ function Layer(level){
     parentLayer.childLayer = this;
     this.childNum = 1;
 }
-function Node(title,contain){
+function Node(title,contain,creatorId){
     this.childNum = 0;
+    this.creatorId = creatorId;
     this.title = title;
     this.contain = contain;
     this.parentNode = null;
@@ -146,6 +147,19 @@ function initMindMap(){
         rdyToMove = false;
         e.target.setAttribute("cursor","default")
     }
+    //添加缩放功能
+    var sx = 100;
+    var sy = 100;
+    document.querySelector("#scale-map-expand").onclick = function(e){
+        sx += 20;
+        sy += 20;
+        mindmap.style.transform = "scale("+(sx/100)+","+(sy/100)+")";
+    };
+    document.querySelector("#scale-map-compress").onclick = function(e){
+        sx -= 20;
+        sy -= 20;
+        mindmap.style.transform = "scale("+(sx/100)+","+(sy/100)+")";
+    };
 }
 
 function findNode(root,id){
@@ -237,9 +251,7 @@ function onClickAddIdea(e){
         var ideaTitle = document.querySelector("#idea-title").value;
         var ideaIntro = document.querySelector("#idea-intro").value;
         //to do:向服务器发送创建idea的请求
-        var parNode = findNode(rootNode,e.target.parentNode.id);
-        var childNode = new Node(ideaTitle,ideaIntro);
-        parNode.insertNode(childNode);
+        addIdeaNode(e.target.parentNode.id,ideaTitle,ideaIntro,user.getUserId());
         //移除表单页
         mask.style.display = "none";
         floatOutDiv.parentNode.removeChild(floatOutDiv);
@@ -249,6 +261,11 @@ function onClickAddIdea(e){
         mask.style.display = "none";
         floatOutDiv.parentNode.removeChild(floatOutDiv);
     }
+}
+function addIdeaNode(parNodeId,title,contain,creatorId){
+    var parNode = findNode(rootNode,parNodeId);
+    var childNode = new Node(title,contain,creatorId);
+    parNode.insertNode(childNode);
 }
 function onClickRemoveIdea(e){
     //在点击了idea node上的删除按钮后的处理
@@ -292,17 +309,24 @@ function adjustMindmap(){
 
 window.onload = function(){
     initMindMap();
+    initRoom();
     // var rootNodeDiv = document.querySelector("#"+rootNode.id);
-    var newIdea1 = new Node("IDEA TITLE","劝君更尽一杯酒");
-    var newIdea2 = new Node("IDEA TITLE","西出阳关无故人");
-    var newIdea3 = new Node("IDEA TITLE","醉卧沙场君莫笑");
-    var newIdea4 = new Node("IDEA TITLE","古来征战几人回");
-    var newIdea5 = new Node("IDEA TITLE","天阶夜色凉如水");
+    var newIdea1 = new Node("IDEA TITLE","劝君更尽一杯酒","a");
+    var newIdea2 = new Node("IDEA TITLE","西出阳关无故人","a");
+    var newIdea3 = new Node("IDEA TITLE","醉卧沙场君莫笑","a");
+    var newIdea4 = new Node("IDEA TITLE","古来征战几人回","a");
+    var newIdea5 = new Node("IDEA TITLE","天阶夜色凉如水","a");
     rootNode.insertNode(newIdea1);
     rootNode.insertNode(newIdea2);
     newIdea2.insertNode(newIdea3);
     newIdea1.insertNode(newIdea4);
     newIdea1.insertNode(newIdea5);
+
+    addNotice("一个新的公告");
+    addMember("吕小布",3);
+    addMember("曾小贤",2);
+    addMember("胡一菲",1);
+    addNews("00","03","一条新的动态~");
     // newIdea4.removeNode();
     // newIdea2.removeNode();
 }

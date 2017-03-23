@@ -4,12 +4,13 @@
         <title></title>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <link href="../static/css/room.css" rel="stylesheet">
+        <link rel="stylesheet" href="../static/css/room.css">
         <link rel="stylesheet" href="../static/css/font-awesome.min.css"/>
         <link rel="stylesheet" href="../static/css/mindmap.css"/>
         <link rel="stylesheet" href="../static/css/float_out_window.css"/>
         <script src="../static/js/user.js"></script>
         <script src="../static/js/mindmap.js"></script>
+        <script src="../static/js/room.js"></script>
         <!--<script src="../static/js/tree.js"></script>-->
     </head>
     <body>
@@ -24,10 +25,6 @@
         </nav>
         <div id="working-area">
             <div id="mindmap">
-                <!--<div class="node-container">
-                    <div class="node-title-container">君不见黄河之水天上来</div>
-                    <div class="node-contain-container">奔流到海不复回</div>
-                </div>-->
                 <svg version="1.1"
                     baseProfile="full"
                     width="100%" height="100%" 
@@ -35,18 +32,20 @@
                 </svg>
             </div>
             <div id="topic-container" class="info-div">
-                <p><span id="topic-title">话题TOPIC</span></p>
-                <span id="topic-intro">话题描述话题描述话题描述话题描述话题描述话题描述话题描述话题描述话题描述话题描述话题描述话题描述话题描述话题描述话题描述话题描述话题描述话题描述话题描述话题描述话题描述话题描述话题描述话题描述话题描述话题描，述话题描述话题描述话题描述话题描述话题描述话题描述话题描述话题描述话题描述话题描述话题描述话题描述话题描述话题描述话题描述话题描述话题描述话题描述话题描述话题描述话题描述话题描述话题描述话。</span>
+                <p><span id="topic-title">公告栏</span></p>
+                <span id="topic-intro"></span>
+                <button class="info-div-btn">></button>
             </div>
             <div id="contributor-container" class="info-div">
                 <p><span id="contributor-title">参与成员</span></p>
                 <ul>
                     <li class="contributor admin"><i class="fa fa-user-circle"></i> 王铁柱</li>
-                    <li class="contributor"><i class="fa fa-user-circle"></i> 田二妞</li>
+                    <li class="contributor me"><i class="fa fa-user-circle"></i> 田二妞</li>
                     <li class="contributor"><i class="fa fa-user-circle"></i> Genji</li>
                     <li class="contributor"><i class="fa fa-user-circle"></i> Ana</li>
                     <li class="contributor"><i class="fa fa-user-circle"></i> Pharah</li>
                 </ul>
+                <button class="info-div-btn">></button>
             </div>
             <div id="news-container" class="info-div">
                 <p><span id="news">最新动态</span></p>
@@ -55,7 +54,10 @@
                     <li>[22:10] 管理员通过了 <strong>田二妞</strong> 的IDEA:IDEA TITLE</li>
                     <li>[22:09] 管理员通过了 <strong>Genji</strong> 的IDEA:IDEA TITLE</li>
                 </ul>
+                <button class="info-div-btn">></button>
             </div>
+            <button id="scale-map-expand"><i class="fa fa-expand"></i></button>
+            <button id="scale-map-compress"><i class="fa fa-compress"></i></button>
         </div>
     </body>
 </html>
