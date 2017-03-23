@@ -224,6 +224,31 @@ function createIdeaOnMap(ideaNode){
 function onClickAddIdea(e){
     //在点击了idea node上的添加按钮后的处理
     //to do:创建float-out-div，用户填写表单，添加确认按钮和取消按钮事件处理程序
+    var body = document.querySelector("body");
+    var floatOutDiv = document.createElement("div");
+    floatOutDiv.className = "float-out-div";
+    floatOutDiv.id = "create-room-form";
+    floatOutDiv.innerHTML = "<div class=\"fod-title\">添加IDEA</div><div class=\"fod-container\"><form><label for=\"idea_title\">IDEA标题</label></p><input id=\"idea-title\" type=\"text\" placeholder=\"请简要概括你的idea\" required maxlength=\"15\"><p><label for=\"idea_intro\">IDEA简介</label></p><textarea id=\"idea-intro\" placeholder=\"再对你的idea添加几句描述吧~\" cols=\"30\" rows=\"10\" required maxlength=\"200\"></textarea></form><div class=\"fod-button-container\"><button class=\"fod-button fod-btn-confirm\" id=\"create-idea-confirm\">确定</button><button class=\"fod-button fod-btn-cancel\">取消</button></div></div>"
+    body.insertBefore(floatOutDiv, body.childNodes[1]);
+    var mask = document.querySelector("#fod-mask");
+    mask.style.display = "block";
+    document.querySelector("#create-idea-confirm").onclick = function(event){
+        //在表单页点击了确认按钮
+        var ideaTitle = document.querySelector("#idea-title").value;
+        var ideaIntro = document.querySelector("#idea-intro").value;
+        //to do:向服务器发送创建idea的请求
+        var parNode = findNode(rootNode,e.target.parentNode.id);
+        var childNode = new Node(ideaTitle,ideaIntro);
+        parNode.insertNode(childNode);
+        //移除表单页
+        mask.style.display = "none";
+        floatOutDiv.parentNode.removeChild(floatOutDiv);
+    }
+    document.querySelector(".fod-btn-cancel").onclick = function(event){
+        //在表单页点击了取消按钮，移除表单页
+        mask.style.display = "none";
+        floatOutDiv.parentNode.removeChild(floatOutDiv);
+    }
 }
 function onClickRemoveIdea(e){
     //在点击了idea node上的删除按钮后的处理
