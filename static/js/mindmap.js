@@ -108,11 +108,6 @@ function removeNodeInLayer(level,layerIndex){
         }
     }
 }
-    // var parentNode = findNode(rootNode,document.querySelector(".parent-idea").id);
-    // this.level = parentNode.level + 1;
-    // this.parentNode = parentNode;
-    // parentNode["child" + ++parentNode.childNum] = this;
-
     
 function initMindMap(){
     //to do:将当前页面的user信息保存到变量user中，测试直接用一个类来新建
@@ -124,6 +119,33 @@ function initMindMap(){
         maxChildNum : 1
     };
     createIdeaOnMap(rootNode);
+    //添加拖拽功能
+    var rdyToMove = false;
+    var beginX,beginY;
+    var workingArea = document.querySelector("#working-area");
+    var mindmap = document.querySelector("#mindmap");
+    workingArea.onmousedown = function(e){
+        rdyToMove = true;
+        beginX = e.screenX;
+        beginY = e.screenY;
+    }
+    workingArea.onmousemove = function(e){
+        if(rdyToMove){
+            e.target.setAttribute("cursor","move")
+            var dx = (e.screenX - beginX)*1;
+            var dy = (e.screenY - beginY)*1;
+            var x0 = mindmap.offsetLeft;
+            var y0 = mindmap.offsetTop;
+            mindmap.style.left = x0 + dx + "px";
+            mindmap.style.top = y0 + dy + "px";
+            beginX = e.screenX;
+            beginY = e.screenY;
+        }
+    }
+    workingArea.onmouseup = function(e){
+        rdyToMove = false;
+        e.target.setAttribute("cursor","default")
+    }
 }
 
 function findNode(root,id){
@@ -168,7 +190,6 @@ function createIdeaOnMap(ideaNode){
     addBtn.onclick = onClickAddIdea;
     container.appendChild(addBtn);
     if(ideaNode.id !== "root-node"){       
-        console.log(user.getUserType());
         if(user.getUserType() === 0){
             //不为根节点且为管理员权限，为每个节点创建删除按钮
             var removeBtn = document.createElement("button");

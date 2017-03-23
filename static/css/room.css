@@ -88,6 +88,7 @@ nav a{
     background-color: rgb(252,252,252);
     position: relative;
     box-sizing: border-box;
+    overflow: hidden;
     /*padding-top: 40px;*/
 }
 #mindmap{
@@ -95,7 +96,8 @@ nav a{
     min-height: 100%;
     box-sizing: border-box;
     position: absolute;
-    overflow: hidden;
+    left: 0;
+    top: 0;
 }
 .info-div{
     width: 25%;
