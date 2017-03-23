@@ -223,9 +223,9 @@ function createIdeaOnMap(ideaNode){
         }
         //默认放到父节点正右方
         var parentDiv = document.querySelector("#"+ideaNode.parentNode.id);
-        var parentDivRect = parentDiv.getBoundingClientRect();
-        container.style.left = (parentDivRect.left + ideaNodeWidth+ ideaNodeMarginRight) +"px";
-        container.style.top = parentDivRect.top - navHeight + "px";
+        // var parentDivRect = parentDiv.getBoundingClientRect();
+        container.style.left = (parentDiv.offsetLeft + ideaNodeWidth+ ideaNodeMarginRight) +"px";
+        container.style.top = parentDiv.offsetTop + "px";
         //在SVG图像中画node之间的连线
         var svg = document.querySelector("svg");
         // var line = document.createElement("line");
@@ -233,10 +233,10 @@ function createIdeaOnMap(ideaNode){
         line.id = ideaNode.parentNode.id + "-to-" + ideaNode.id;
         line.setAttribute("stroke","rgb(68,114,196)");
         line.setAttribute("stroke-width","2");
-        line.setAttribute("x1",parentDivRect.left + ideaNodeWidth);
-        line.setAttribute("y1",parentDivRect.top - navHeight + ideaNodeHeight/2);
-        line.setAttribute("x2",parentDivRect.left + ideaNodeWidth + ideaNodeMarginRight);
-        line.setAttribute("y2",parentDivRect.top - navHeight + ideaNodeHeight/2);
+        line.setAttribute("x1",parentDiv.offsetLeft + ideaNodeWidth);
+        line.setAttribute("y1",parentDiv.offsetTop + ideaNodeHeight/2);
+        line.setAttribute("x2",parentDiv.offsetLeft + ideaNodeWidth + ideaNodeMarginRight);
+        line.setAttribute("y2",parentDiv.offsetTop + ideaNodeHeight/2);
         svg.appendChild(line);
         // 根据实际情况调整整个导图各个节点的位置
         adjustMindmap();

@@ -62,7 +62,7 @@
 }
 #root-node{
     position: absolute;
-    top: 50%;
+    top: calc(50% - 100px);
     left: 50px;
-    transform: translateY(-50%);
+    /*transform: translateY(-50%);*/
 }

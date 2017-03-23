@@ -22,7 +22,10 @@ function initRoom(){
         }
     }
     //to do: 获取房间号
-    roomNumber = document.querySelector("#room-number-message").innerHTML;
+    var msgBox = document.querySelector("#room-number-message");
+    if(msgBox){
+        roomNumber = msgBox.innerHTML;
+    }
     
     console.log(window.roomNumber);
     // document.querySelector("#topic-intro").innerHTML = "[房间号"+roomNumber+"]:邀请同伴加入吧~";
