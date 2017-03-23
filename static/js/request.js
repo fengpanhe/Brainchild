@@ -17,13 +17,17 @@ function createRoomRequest(params) {
                     indexParams = {
                         'code': 'createRoom',
                         'userName': params['id'],
-                        'roomTitle':params['roomTitle'],
-                        'topicIntro':params['topicIntro'],
-                        'roomId'  : responseData['roomId']
+                        'roomTitle': params['roomTitle'],
+                        'topicIntro': params['topicIntro'],
+                        'roomId': responseData['roomId']
                     }
                     localStorage.setItem("indexParams", JSON.stringify(indexParams));
-                    var roomWindow = window.open("/room");
-
+                    // var roomWindow = window.open("/room");
+                    $.ajax({
+                        type: 'get',
+                        url: "/room",
+                        complete:function(){location.href ="room"}
+                    });
                     // requestMapStatus(responseData['roomId'], params['id']);
 
                     return responseData['roomId'];
@@ -61,10 +65,15 @@ function joinRoomRequest(params) {
                     indexParams = {
                         'code': 'joinRoom',
                         'userName': params['id'],
-                        'roomId'  : params['roomId']
+                        'roomId': params['roomId']
                     }
                     localStorage.setItem("indexParams", JSON.stringify(indexParams));
-                    var roomWindow = window.open("room");
+                    // var roomWindow = window.open("room");
+                    $.ajax({
+                        type: 'get',
+                        url: "/room",
+                        complete:function(){location.href ="room"}
+                    });
                     // requestMapStatus(params['roomId'], params['id']);
                     console.log('成功加入');
                     return true;
@@ -115,8 +124,8 @@ function requestMapStatus(roomId, userName) {
             default:
                 break;
         }
-        console.log(returnData);
-        alert(returnData["mindMap"]);
+        // console.log(returnData);
+        // alert(returnData["mindMap"]);
     };
     websocket.onerror = function (evt) {};
 }
