@@ -335,7 +335,7 @@ var roomTitle = '';
 var topicIntro = '';
 
 
-window.onload = function () {
+$(function () {
 
     console.log('o' + getCookie('roomId'));
     if (getCookie('code') == 'createRoom') {
@@ -352,7 +352,7 @@ window.onload = function () {
     requestMapStatus(roomId, userName);
     // initMindMap();
     initRoom();
-}
+})
 
 function getCookie(cname) {
     var ss = document.cookie;
