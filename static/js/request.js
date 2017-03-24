@@ -119,8 +119,14 @@ function requestMapStatus(roomId, userName) {
             case 2: //更新节点
                 mindMapNode = JSON.parse(returnData['mindMap']);
                 console.log(mindMapNode);
-                addIdeaNode(mindMapNode['parentNode'], mindMapNode['ideaTitle'], mindMapNode['ideaIntro'], mindMapNode['userId']);
-                addNews(mindMapNode['userId'] + '添加了' + mindMapNode['ideaTitle']);
+                if (mindMapNode['action'] == 'addNode') {
+                    addIdeaNode(mindMapNode['parentNode'], mindMapNode['ideaTitle'], mindMapNode['ideaIntro'], mindMapNode['userId']);
+                    addNews(mindMapNode['userId'] + '添加了' + mindMapNode['ideaTitle']);
+                }else{
+                    console.log(mindMapNode['nodeId']);
+                    removeIdeaNode(mindMapNode['nodeId']);
+                }
+
                 break;
             case 3: //公告栏
                 addNotice(returnData['notice']);

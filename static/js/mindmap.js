@@ -254,6 +254,7 @@ function onClickAddIdea(e) {
         var ideaIntro = document.querySelector("#idea-intro").value;
         //to do:向服务器发送创建idea的请求
         var mindmapNode = {
+            'action': 'addNode',
             'parentNode': e.target.parentNode.id,
             'ideaTitle': ideaTitle,
             'ideaIntro': ideaIntro,
@@ -285,13 +286,22 @@ function addIdeaNode(parNodeId, title, contain, creatorId) {
 
 function onClickRemoveIdea(e) {
     //在点击了idea node上的删除按钮后的处理
-    var div = e.target.parentNode;
-    var node = findNode(rootNode, div.id);
-    node.removeNode();
+    var mindmapNode = {
+        'action': 'removeNode',
+        'nodeId': e.target.parentNode.id,
+    };
+    var params = {
+        'roomId': roomId,
+        'mindMap': JSON.stringify(mindmapNode),
+        'userId': userName
+    };
+    updateMindMap(params);
+    // var node = findNode(rootNode, div.id);
+    // node.removeNode();
 }
 
 function removeIdeaNode(nodeId) {
-    var node = findNode(nodeId);
+    var node = findNode(rootNode,nodeId);
     node.removeNode();
 }
 
