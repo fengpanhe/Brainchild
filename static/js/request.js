@@ -179,7 +179,8 @@ function requestMemberList(params){
                 case 1:
                     memberList = JSON.parse(responseData['memberList']);
                     console.log(memberList);
-                    return memberList;
+                    
+                    break;
                 case 0:
                     alert('加入失败');
                     return false;
@@ -193,4 +194,5 @@ function requestMemberList(params){
             alert('POST failed.');
         }
     });
+    return memberList;
 }
