@@ -276,7 +276,7 @@ function onClickAddIdea(e) {
         updateMindMap(params);
 
 
-        addIdeaNode(e.target.parentNode.id, ideaTitle, ideaIntro, user.getUserId());
+        // addIdeaNode(e.target.parentNode.id, ideaTitle, ideaIntro, user.getUserId());
         //移除表单页
         mask.style.display = "none";
         floatOutDiv.parentNode.removeChild(floatOutDiv);

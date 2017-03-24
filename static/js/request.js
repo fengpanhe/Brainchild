@@ -105,7 +105,7 @@ function requestMapStatus(roomId, userName) {
             case 2: //更新节点
                 mindMapNode = JSON.parse(returnData['mindMap']);
                 console.log(mindMapNode);
-                addIdeaNode(mindMapNode['parNodeId'], mindMapNode['ideaTitle'], mindMapNode['ideaIntro'], mindMapNode['userId']);
+                addIdeaNode(mindMapNode['parentNode'], mindMapNode['ideaTitle'], mindMapNode['ideaIntro'], mindMapNode['userId']);
                 break;
             case 3: //公告栏
                 addNotice(returnData['notice']);
