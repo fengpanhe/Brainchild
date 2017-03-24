@@ -1,4 +1,3 @@
-var roomNumber;
 function initRoom(){
     //info div点击按钮隐藏功能
     var hiddeBtns = document.querySelectorAll(".info-div-btn");
@@ -21,24 +20,19 @@ function initRoom(){
             }
         }
     }
-    //to do: 获取房间号
-    var msgBox = document.querySelector("#room-number-message");
-    if(msgBox){
-        roomNumber = msgBox.innerHTML;
-    }
-    console.log(roomNumber);
-    
     addNotice("邀请同伴加入吧~");
-    //to do: 初始化成员列表
+    //to do: 请求成员列表
+    
 }
 function addMember(id,type){
-    //成员列表添加成员
+    //成员列表添加成员，0为管理员，1为用户
     var li = document.createElement("li");
     li.classList.add("contributor");
-    if(type === 1) //管理员类型的用户
+    if(type === 0) //管理员类型的用户
         li.classList.add("admin");
-    else if(type === 2) //为当页用户
+    if(id === userName) //为当页用户
         li.classList.add("me");
+
     li.innerHTML = "<i class=\"fa fa-user-circle\"></i> " + id;
     var ul = document.getElementById("contributor-container").getElementsByTagName("ul")[0];
     ul.appendChild(li);
@@ -46,9 +40,12 @@ function addMember(id,type){
 function addNotice(notice){
     //发布公告
     var noticeDiv = document.querySelector("#topic-intro");
-    noticeDiv.innerHTML = "<strong>[ 房间号"+roomNumber+" ] :</strong> " + notice;
+    noticeDiv.innerHTML = "<strong>[ 房间号"+roomId+" ] :</strong> " + notice;
 }
-function addNews(hour,minute,news){
+function addNews(news){
+    var time = new Date();
+    var hour = time.getHours();
+    var minute = time.getMinutes();
     var ul = document.getElementById("news-container").getElementsByTagName("ul")[0];
     var li = document.createElement("li");
     li.innerHTML = "["+hour+":"+minute+"] " + news;

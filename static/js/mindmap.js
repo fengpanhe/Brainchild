@@ -112,7 +112,6 @@ function removeNodeInLayer(level, layerIndex) {
 }
 
 function initMindMap() {
-    //to do:将当前页面的user信息保存到变量user中，测试直接用一个类来新建
     var msgBox = document.querySelector("#user-id-message");
     if (msgBox) {
         var userId = msgBox.innerHTML;
@@ -122,7 +121,7 @@ function initMindMap() {
         var userType = msgBox.innerHTML;
     }
     user = new User(userId, userType);
-    rootNode = new Node(document.querySelector("#topic-title").innerHTML, document.querySelector("#topic-intro").innerHTML);
+    rootNode = new Node(ideaTitle,topicIntro,"admin");
     firstLayer = {
         level: 1,
         childNum: 1,
@@ -275,8 +274,6 @@ function onClickAddIdea(e) {
         };
         updateMindMap(params);
 
-
-        // addIdeaNode(e.target.parentNode.id, ideaTitle, ideaIntro, user.getUserId());
         //移除表单页
         mask.style.display = "none";
         floatOutDiv.parentNode.removeChild(floatOutDiv);
@@ -348,11 +345,6 @@ window.onload = function () {
 
     var indexParams = JSON.parse(window.localStorage.getItem("indexParams"));
     console.log(indexParams);
-    // var userName = '';
-    // var userType = '';
-    // var roomId = '';
-    // var roomTitle = '';
-    // var topicIntro = '';
     if (indexParams['code'] == 'createRoom') {
         userName = indexParams['userName'];
         userType = 0;
@@ -368,25 +360,4 @@ window.onload = function () {
     requestMapStatus(roomId, userName);
     initMindMap();
     initRoom();
-    // document.write("123");
-    console.log(roomNumber);
-    // var rootNodeDiv = document.querySelector("#"+rootNode.id);
-    var newIdea1 = new Node("IDEA TITLE", "劝君更尽一杯酒", "a");
-    var newIdea2 = new Node("IDEA TITLE", "西出阳关无故人", "a");
-    var newIdea3 = new Node("IDEA TITLE", "醉卧沙场君莫笑", "a");
-    var newIdea4 = new Node("IDEA TITLE", "古来征战几人回", "a");
-    var newIdea5 = new Node("IDEA TITLE", "天阶夜色凉如水", "a");
-    rootNode.insertNode(newIdea1);
-    rootNode.insertNode(newIdea2);
-    newIdea2.insertNode(newIdea3);
-    newIdea1.insertNode(newIdea4);
-    newIdea1.insertNode(newIdea5);
-
-    addNotice("一个新的公告");
-    addMember("吕小布", 3);
-    addMember("曾小贤", 2);
-    addMember("胡一菲", 1);
-    addNews("00", "03", "一条新的动态~");
-    // newIdea4.removeNode();
-    // newIdea2.removeNode();
 }

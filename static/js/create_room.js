@@ -70,7 +70,6 @@ function initFODs() {
 				body.removeChild(floatOutDiv);
 
 			}
-			// to do:向服务器发送创建房间的信息和请求
 			console.log("b");
 			var params = {
 				'id': id,
@@ -81,7 +80,6 @@ function initFODs() {
 			joinRoomRequest(params);
 			// to do:跳转到工作界面
 		}
-		/*在创建房间信息输入页面点击取消按钮*/
 		var joinWorkCancel = document.getElementsByClassName("fod-btn-cancel")[0];
 		joinWorkCancel.onclick = function (e) {
 			mask.style.display = "none";
@@ -90,13 +88,6 @@ function initFODs() {
 	}
 }
 
-window.onload = function () {
-	// var storage = window.localStorage;
-	// localStorage.setItem("roomNumber","123");
-
-	// var roomWindow = window.open("room.html");
-	// roomWindow.onload = function(){
-	// 	console.log(roomWindow.document);
-	// }
+document.addEventListener("DOMContentLoaded",function () {
 	initFODs();
-}
+});
