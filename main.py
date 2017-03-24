@@ -105,6 +105,17 @@ class Room(object):
                 logger.info(member_list);
                 return member_list
         return False
+
+    def get_mind_start(self,user_id):
+        logger.info(user_id);
+        for user in self.users:
+            if user_id == user.user_name:
+                mind_start_info = {
+                    'roomTitle' : self.room_title,
+                    'topicIntro' : self.topic_intro
+                }
+                return mind_start_info
+        return False
                 
 
 class Rooms(object):
@@ -155,6 +166,12 @@ class Rooms(object):
         if not (room_id in self.rooms):
             return False
         return self.rooms[room_id].get_member_list(user_id)
+
+    def get_room_mind_start(self, room_id, user_id):
+        logger.info(room_id + " " + user_id)
+        if not (room_id in self.rooms):
+            return False
+        return self.rooms[room_id].get_mind_start(user_id)
         
 
 class IntexHandler(tornado.web.RequestHandler):
@@ -228,6 +245,19 @@ class RequestMemberList(tornado.web.RequestHandler):
             returnVal['memberList'] = json.dumps(result)
         self.write(json.dumps(returnVal))
 
+class RequestMindStartInfo(tornado.web.RequestHandler):
+    def post(self):
+        logger.info("RequestMindStartInfo")
+        returnVal = dict()
+        room_id = self.get_argument("roomId")
+        user_id = self.get_argument("userId")
+        result = self.application.rooms_manage.get_room_mind_start(room_id,user_id)
+        if not result:
+            returnVal["returnCode"] = 0
+        else:
+            returnVal["returnCode"] = 1
+            returnVal['mindStartInfo'] = json.dumps(result)
+        self.write(json.dumps(returnVal))
 
 class MapStatusHandler(tornado.websocket.WebSocketHandler):
     def open(self,input):
@@ -277,6 +307,7 @@ class Application(tornado.web.Application):
             (r'/joinRoom', JoinRoomHandler),
             (r'/room', RoomHandler),
             (r'/requestMemberList', RequestMemberList),
+            (r'/requestMindStartInfo', RequestMindStartInfo),
             (r'/updateMindMap', UpdateMapHandler),
             (r'/status/(\w+\=\w+\&\w+\=\w+)', MapStatusHandler)
             

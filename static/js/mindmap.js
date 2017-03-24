@@ -350,7 +350,7 @@ window.onload = function () {
         roomId = getCookie('roomId');
     }
     requestMapStatus(roomId, userName);
-    initMindMap();
+    // initMindMap();
     initRoom();
 }
 

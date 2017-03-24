@@ -103,12 +103,15 @@ function requestMapStatus(roomId, userName) {
     var websocket = new WebSocket(host);
 
     websocket.onopen = function (evt) {
-        params = {
+        //请求更新成员列表
+        requestMemberList({
             'roomId': roomId,
             'userId': userName
-        }
-        var memberList = requestMemberList(params);
-        console.log(memberList);
+        });
+        requestMindStartInfo({
+            'roomId': roomId,
+            'userId': userName
+        });
     };
     websocket.onmessage = function (evt) {
         var returnData = JSON.parse(evt.data);
@@ -117,13 +120,17 @@ function requestMapStatus(roomId, userName) {
                 mindMapNode = JSON.parse(returnData['mindMap']);
                 console.log(mindMapNode);
                 addIdeaNode(mindMapNode['parentNode'], mindMapNode['ideaTitle'], mindMapNode['ideaIntro'], mindMapNode['userId']);
+                addNews(mindMapNode['userId'] + '添加了' + mindMapNode['ideaTitle']);
                 break;
             case 3: //公告栏
                 addNotice(returnData['notice']);
                 break;
             case 4: //参与成员
                 if (returnData['action'] == 'addUser') {
-                    addMember(returnData['userId'], returnData['userType']);
+                    if (userName != returnData['userId']) {
+                        addMember(returnData['userId'], returnData['userType']);
+                    }
+
                 } else {
                     removeMember(returnData['userId']);
                 }
@@ -153,7 +160,7 @@ function updateMindMap(params) {
 
             switch (responseData['returnCode']) {
                 case 1:
-                    alert('成功更新');
+                    console.log('成功更新');
                     return true;
                 case 0:
                     alert('加入失败');
@@ -181,12 +188,13 @@ function requestMemberList(params) {
         success: function (responseData, textStatus, jqXHR) {
             console.log("make success");
             console.log(responseData);
-
             switch (responseData['returnCode']) {
                 case 1:
                     memberList = JSON.parse(responseData['memberList']);
                     console.log(memberList);
-
+                    for (var i = 0; i < memberList.length; i++) {
+                        addMember(memberList[i], 1);
+                    }
                     break;
                 case 0:
                     alert('requestMemberList失败');
@@ -201,5 +209,37 @@ function requestMemberList(params) {
             alert('POST failed.');
         }
     });
-    return memberList;
+}
+
+
+function requestMindStartInfo(params) {
+    console.log(params);
+    $.ajax({
+        type: 'POST',
+        url: "/requestMindStartInfo",
+        data: params,
+        dataType: 'json',
+        success: function (responseData, textStatus, jqXHR) {
+            console.log("make success");
+            console.log(responseData);
+            switch (responseData['returnCode']) {
+                case 1:
+                    mindStartInfo = JSON.parse(responseData['mindStartInfo']);
+                    roomTitle = mindStartInfo['roomTitle'];
+                    topicIntro = mindStartInfo['topicIntro'];
+                    initMindMap();
+                    break;
+                case 0:
+                    alert('requestMindStartInfo失败');
+                    return false;
+                default:
+                    alert('未知错误');
+                    return false;
+            }
+        },
+        error: function (responseData, textStatus, errorThrown) {
+            console.log("make error");
+            alert('POST failed.');
+        }
+    });
 }
