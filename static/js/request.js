@@ -102,7 +102,14 @@ function requestMapStatus(roomId, userName) {
     console.log(roomId + userName);
     var websocket = new WebSocket(host);
 
-    websocket.onopen = function (evt) {};
+    websocket.onopen = function (evt) {
+        params = {
+            'roomId': roomId,
+            'userId': userName
+        }
+        var memberList = requestMemberList(params);
+        console.log(memberList);
+    };
     websocket.onmessage = function (evt) {
         var returnData = JSON.parse(evt.data);
         switch (returnData['returnCode']) {
@@ -163,7 +170,7 @@ function updateMindMap(params) {
     });
 }
 
-function requestMemberList(params){
+function requestMemberList(params) {
     console.log(params);
     var memberList = [];
     $.ajax({
@@ -179,10 +186,10 @@ function requestMemberList(params){
                 case 1:
                     memberList = JSON.parse(responseData['memberList']);
                     console.log(memberList);
-                    
+
                     break;
                 case 0:
-                    alert('加入失败');
+                    alert('requestMemberList失败');
                     return false;
                 default:
                     alert('未知错误');

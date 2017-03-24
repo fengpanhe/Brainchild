@@ -96,11 +96,13 @@ class Room(object):
             callback(params)
 
     def get_member_list(self,user_id):
+        logger.info(user_id);
         member_list = []
         for user in self.users:
             if user_id == user.user_name:
                 for user in self.users:
                     member_list.append(user.user_name)
+                logger.info(member_list);
                 return member_list
         return False
                 
