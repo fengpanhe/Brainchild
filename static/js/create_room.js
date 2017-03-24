@@ -88,6 +88,6 @@ function initFODs() {
 	}
 }
 
-document.addEventListener("DOMContentLoaded",function () {
+$(document).ready(function(){
 	initFODs();
-});
+})
