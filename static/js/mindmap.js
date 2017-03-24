@@ -112,16 +112,8 @@ function removeNodeInLayer(level, layerIndex) {
 }
 
 function initMindMap() {
-    var msgBox = document.querySelector("#user-id-message");
-    if (msgBox) {
-        var userId = msgBox.innerHTML;
-    }
-    msgBox = document.querySelector("#user-type-message");
-    if (msgBox) {
-        var userType = msgBox.innerHTML;
-    }
     user = new User(userId, userType);
-    rootNode = new Node(ideaTitle,topicIntro,"admin");
+    rootNode = new Node(ideaTitle,topicIntro,"房主");
     firstLayer = {
         level: 1,
         childNum: 1,
