@@ -112,8 +112,8 @@ function removeNodeInLayer(level, layerIndex) {
 }
 
 function initMindMap() {
-    user = new User(userId, userType);
-    rootNode = new Node(ideaTitle,topicIntro,"房主");
+    user = new User(userName, userType);
+    rootNode = new Node(roomTitle, topicIntro, "房主");
     firstLayer = {
         level: 1,
         childNum: 1,
@@ -333,23 +333,35 @@ var userType = '';
 var roomId = '';
 var roomTitle = '';
 var topicIntro = '';
+
+
 window.onload = function () {
 
-    var indexParams = JSON.parse(window.localStorage.getItem("indexParams"));
-    console.log(indexParams);
-    if (indexParams['code'] == 'createRoom') {
-        userName = indexParams['userName'];
+    console.log('o' + getCookie('roomId'));
+    if (getCookie('code') == 'createRoom') {
+        userName = getCookie('userName');
         userType = 0;
-        roomId = indexParams['roomId'];
-        roomTitle = indexParams['roomTitle'];
-        topicIntro = indexParams['topicIntro'];
+        roomId = getCookie('roomId');
+        roomTitle = getCookie('roomTitle');
+        topicIntro = getCookie('topicIntro');
     } else {
-        userName = indexParams['userName'];
+        userName = getCookie('userName');
         userType = 1;
-        roomId = indexParams['roomId'];
+        roomId = getCookie('roomId');
     }
-
     requestMapStatus(roomId, userName);
     initMindMap();
     initRoom();
+}
+
+function getCookie(cname) {
+    var ss = document.cookie;
+    var name = cname + "=";
+    var ca = document.cookie.split(';');
+    for (var i = 0; i < ca.length; i++) {
+        var c = ca[i].trim();
+        if (c.indexOf(name) == 0)
+            return c.substring(name.length, c.length);
+    }
+    return "";
 }

@@ -21,8 +21,13 @@ function initRoom(){
         }
     }
     addNotice("邀请同伴加入吧~");
-    //to do: 请求成员列表
-    
+    //to do: 请求成员列表b
+    params = {
+        'roomId' : roomId,
+        'userId':userName
+    }
+    var memberList = requestMemberList(params);
+    console.log(memberList);
 }
 function addMember(id,type){
     //成员列表添加成员，0为管理员，1为用户

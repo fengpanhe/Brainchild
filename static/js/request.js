@@ -12,8 +12,6 @@ function createRoomRequest(params) {
             switch (responseData['returnCode']) {
                 case 1:
                     console.log('创建成功: 房间ID为' + responseData['roomId']);
-
-                    var storage = window.localStorage;
                     indexParams = {
                         'code': 'createRoom',
                         'userName': params['id'],
@@ -21,15 +19,19 @@ function createRoomRequest(params) {
                         'topicIntro': params['topicIntro'],
                         'roomId': responseData['roomId']
                     }
-                    localStorage.setItem("indexParams", JSON.stringify(indexParams));
-                    // var roomWindow = window.open("/room");
+                    document.cookie = 'code=' + 'createRoom';
+                    document.cookie = 'userName=' + params['id'];
+                    document.cookie = 'roomTitle=' + params['roomTitle'];
+                    document.cookie = 'topicIntro=' + params['topicIntro'];
+                    document.cookie = 'roomId=' + responseData['roomId'];
+                    var url = '/room';
                     $.ajax({
                         type: 'get',
-                        url: "/room",
-                        complete:function(){location.href ="room"}
+                        url: url,
+                        complete: function () {
+                            location.href = url
+                        }
                     });
-                    // requestMapStatus(responseData['roomId'], params['id']);
-
                     return responseData['roomId'];
                 case 0:
                     alert('创建失败');
@@ -67,14 +69,17 @@ function joinRoomRequest(params) {
                         'userName': params['id'],
                         'roomId': params['roomId']
                     }
-                    localStorage.setItem("indexParams", JSON.stringify(indexParams));
-                    // var roomWindow = window.open("room");
+                    document.cookie = 'code=' + 'joinRoom';
+                    document.cookie = 'userName=' + params['id'];
+                    document.cookie = 'roomId=' + params['roomId'];
+                    var url = '/room'
                     $.ajax({
                         type: 'get',
-                        url: "/room",
-                        complete:function(){location.href ="room"}
+                        url: url,
+                        complete: function () {
+                            location.href = "room"
+                        }
                     });
-                    // requestMapStatus(params['roomId'], params['id']);
                     console.log('成功加入');
                     return true;
                 case 0:
@@ -93,8 +98,7 @@ function joinRoomRequest(params) {
 }
 
 function requestMapStatus(roomId, userName) {
-    var host = 'ws:' + window.location.host +'/status/roomId=' + roomId + '&userName=' + userName;
-    // var host = 'ws://localhost:8000/status/id=ida&asd=asd';
+    var host = 'ws:' + window.location.host + '/status/roomId=' + roomId + '&userName=' + userName;
     console.log(roomId + userName);
     var websocket = new WebSocket(host);
 
@@ -124,8 +128,6 @@ function requestMapStatus(roomId, userName) {
             default:
                 break;
         }
-        // console.log(returnData);
-        // alert(returnData["mindMap"]);
     };
     websocket.onerror = function (evt) {};
 }
@@ -146,6 +148,38 @@ function updateMindMap(params) {
                 case 1:
                     alert('成功更新');
                     return true;
+                case 0:
+                    alert('加入失败');
+                    return false;
+                default:
+                    alert('未知错误');
+                    return false;
+            }
+        },
+        error: function (responseData, textStatus, errorThrown) {
+            console.log("make error");
+            alert('POST failed.');
+        }
+    });
+}
+
+function requestMemberList(params){
+    console.log(params);
+    var memberList = [];
+    $.ajax({
+        type: 'POST',
+        url: "/requestMemberList",
+        data: params,
+        dataType: 'json',
+        success: function (responseData, textStatus, jqXHR) {
+            console.log("make success");
+            console.log(responseData);
+
+            switch (responseData['returnCode']) {
+                case 1:
+                    memberList = JSON.parse(responseData['memberList']);
+                    console.log(memberList);
+                    return memberList;
                 case 0:
                     alert('加入失败');
                     return false;

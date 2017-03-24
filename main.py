@@ -95,6 +95,15 @@ class Room(object):
             callback = user.get_callback()
             callback(params)
 
+    def get_member_list(self,user_id):
+        member_list = []
+        for user in self.users:
+            if user_id == user.user_name:
+                for user in self.users:
+                    member_list.append(user.user_name)
+                return member_list
+        return False
+                
 
 class Rooms(object):
     roomCount = 0
@@ -137,6 +146,14 @@ class Rooms(object):
             return False
         self.rooms[room_id].remove_user(user)
         return True
+
+
+    def get_room_member_list(self, room_id, user_id):
+        logger.info(room_id + " " + user_id)
+        if not (room_id in self.rooms):
+            return False
+        return self.rooms[room_id].get_member_list(user_id)
+        
 
 class IntexHandler(tornado.web.RequestHandler):
     def get(self):
@@ -195,6 +212,20 @@ class UpdateMapHandler(tornado.web.RequestHandler):
             returnVal["returnCode"] = 1
         self.write(json.dumps(returnVal))
 
+class RequestMemberList(tornado.web.RequestHandler):
+    def post(self):
+        logger.info("RequestMemberList")
+        returnVal = dict()
+        room_id = self.get_argument("roomId")
+        user_id = self.get_argument("userId")
+        result = self.application.rooms_manage.get_room_member_list(room_id,user_id)
+        if not result:
+            returnVal["returnCode"] = 0
+        else:
+            returnVal["returnCode"] = 1
+            returnVal['memberList'] = json.dumps(result)
+        self.write(json.dumps(returnVal))
+
 
 class MapStatusHandler(tornado.websocket.WebSocketHandler):
     def open(self,input):
@@ -243,6 +274,7 @@ class Application(tornado.web.Application):
             (r'/createRoom', CreateRoomHandler),
             (r'/joinRoom', JoinRoomHandler),
             (r'/room', RoomHandler),
+            (r'/requestMemberList', RequestMemberList),
             (r'/updateMindMap', UpdateMapHandler),
             (r'/status/(\w+\=\w+\&\w+\=\w+)', MapStatusHandler)
             
