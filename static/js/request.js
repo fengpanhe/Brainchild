@@ -93,7 +93,7 @@ function joinRoomRequest(params) {
 }
 
 function requestMapStatus(roomId, userName) {
-    var host = 'ws://localhost:8000/status/roomId=' + roomId + '&userName=' + userName;
+    var host = 'ws:' + window.location.host +'/status/roomId=' + roomId + '&userName=' + userName;
     // var host = 'ws://localhost:8000/status/id=ida&asd=asd';
     console.log(roomId + userName);
     var websocket = new WebSocket(host);
