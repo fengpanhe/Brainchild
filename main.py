@@ -41,6 +41,7 @@ class Room(object):
     mind_map = ""
     creator_id = ""
     users = []
+    member_list = []
 
     def __init__(self, room_id, room_title, topic_intro, mind_map, creator_id):
         self.room_id = room_id
@@ -52,6 +53,7 @@ class Room(object):
 
     def add_user(self, user):
         self.users.append(user)
+        self.member_list.append(user.user_name)
         logger.info("roomId:" + self.room_id + "userNum: " + str(len(self.users)))
         params = {
             'returnCode'   : 4,
@@ -97,13 +99,10 @@ class Room(object):
 
     def get_member_list(self,user_id):
         logger.info(user_id);
-        member_list = []
         for user in self.users:
             if user_id == user.user_name:
-                for user in self.users:
-                    member_list.append(user.user_name)
-                logger.info(member_list);
-                return member_list
+                logger.info(self.member_list);
+                return self.member_list
         return False
 
     def get_mind_start(self,user_id):

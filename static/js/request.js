@@ -185,7 +185,6 @@ function updateMindMap(params) {
 
 function requestMemberList(params) {
     console.log(params);
-    var memberList = [];
     $.ajax({
         type: 'POST',
         url: "/requestMemberList",
@@ -196,6 +195,7 @@ function requestMemberList(params) {
             console.log(responseData);
             switch (responseData['returnCode']) {
                 case 1:
+                    var memberList = [];
                     memberList = JSON.parse(responseData['memberList']);
                     console.log(memberList);
                     for (var i = 0; i < memberList.length; i++) {
