@@ -23,8 +23,8 @@ logger.addHandler(handler)
 
 
 class User(object):
-    user_name = ""
-    callback = ""
+    # user_name = ""
+    # callback = ""
 
     def __init__(self, name, callback):
         self.user_name = name
@@ -35,13 +35,13 @@ class User(object):
 
 
 class Room(object):
-    room_id = ""
-    room_title = ""
-    topic_intro = ""
-    mind_map = ""
-    creator_id = ""
-    users = []
-    member_list = []
+    # room_id = ""
+    # room_title = ""
+    # topic_intro = ""
+    # mind_map = ""
+    # creator_id = ""
+    # users = []
+    # member_list = []
 
     def __init__(self, room_id, room_title, topic_intro, mind_map, creator_id):
         self.room_id = room_id
@@ -49,6 +49,8 @@ class Room(object):
         self.topic_intro = topic_intro
         self.mind_map = mind_map
         self.creator_id = creator_id
+        self.users = []
+        self.member_list = []
         # self.callbacks.append(callbacks)
 
     def add_user(self, user):
@@ -118,8 +120,11 @@ class Room(object):
                 
 
 class Rooms(object):
-    roomCount = 0
-    rooms = {}
+    # roomCount = 0
+    # rooms = {}
+    def __init__(self):
+        self.roomCount = 0
+        self.rooms = {}
 
     def create_room(self, room_title, topic_intro, mind_map, creator_id):
         room_id = ""
@@ -130,7 +135,7 @@ class Rooms(object):
                 break
         self.rooms[room_id] = Room(room_id, room_title, topic_intro, mind_map, creator_id)
         self.roomCount += 1
-        logger.info("roomNum: " + str(len(self.rooms)))
+        logger.info("roomNum: " + str(self.rooms))
         return room_id
 
     def delete_room(self, room_id):
