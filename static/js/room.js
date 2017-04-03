@@ -21,6 +21,7 @@ $(function () {
         roomId = getCookie('roomId');
     }
     requestMapStatus(roomId, userName);
+    alert("after requestMapStatus");
     // initMindMap();
     initRoom();
     

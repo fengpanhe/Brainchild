@@ -98,11 +98,11 @@ function joinRoomRequest(params) {
 }
 
 function requestMapStatus(roomId, userName) {
-    var host = 'ws:' + window.location.host + '/status/roomId=' + roomId + '&userName=' + userName;
+    var host = 'ws://' + window.location.host + '/status/roomId=' + roomId + '&userName=' + userName;
     console.log(roomId + userName);
     var websocket = new WebSocket(host);
 
-    websocket.onopen = function (evt) {
+    websocket.addEventListener('open', function(evt){
         //请求更新成员列表
         requestMemberList({
             'roomId': roomId,
@@ -112,8 +112,9 @@ function requestMapStatus(roomId, userName) {
             'roomId': roomId,
             'userId': userName
         });
-    };
-    websocket.onmessage = function (evt) {
+    });
+
+    websocket.addEventListener('message', function(evt){
         var returnData = JSON.parse(evt.data);
         switch (returnData['returnCode']) {
             case 2: //更新节点
@@ -148,8 +149,11 @@ function requestMapStatus(roomId, userName) {
             default:
                 break;
         }
-    };
-    websocket.onerror = function (evt) {};
+    });
+
+    websocket.addEventListener('error', function(evt){
+        alert("Websocket error!");
+    });
 }
 
 
@@ -197,7 +201,7 @@ function requestMemberList(params) {
                 case 1:
                     var memberList = [];
                     memberList = JSON.parse(responseData['memberList']);
-                    console.log(memberList);
+                    // console.log(memberList);
                     for (var i = 0; i < memberList.length; i++) {
                         addMember(memberList[i], 1);
                     }
