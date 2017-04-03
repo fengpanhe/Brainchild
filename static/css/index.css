@@ -36,6 +36,7 @@ nav,#brand,nav > ul,nav li{
 nav{
     width: 100%;
     position: relatve;
+    transition: all 0.2s;
 }
 nav > ul{
     float: right;
@@ -47,6 +48,7 @@ nav > ul{
     font-size: 25px;
     margin-left: 60px;
     cursor: pointer;
+    transition: all 0.2s;
 }
 nav li{
     margin-right: 60px;
@@ -65,7 +67,9 @@ nav a{
     box-shadow: 0px 5px 9px rgb(30,30,30);
     transition: all,0.2s;
 }
-
+#menu{
+    display: none;
+}
 /*中间部分*/
 #center-block{
     position: absolute;
@@ -133,4 +137,81 @@ nav a{
 #read-document:hover{
     border-color: rgb(68,114,196);
     background-color: rgb(68,114,196);
+}
+
+@media (max-width: 756px){
+    /*在小尺寸屏幕上导航栏重布局*/
+    nav{
+        height: 60px;
+        overflow: hidden;
+    }
+    nav.expand{
+    /*nav:hover{*/
+        /*点击后伸展开的导航栏*/
+        height: 180px;
+        background-color: rgba(0,0,0,.6);
+    }
+    nav.expand>#brand,nav.expand>#menu,{
+    /*nav:hover>#brand,nav:hover>#menu{*/
+        opacity: .5;
+    }
+    nav.expand li:nth-child(1),nav.expand li:nth-child(3){
+    /*nav:hover li:nth-child(1),nav:hover li:nth-child(3){*/
+        background-color: rgba(255,255,255,.1);
+    }
+    #brand{
+        width: 100%;
+        height: 60px;
+        line-height: 60px;
+        text-align: center;
+        margin-left: 0;
+    }
+    nav>ul,nav li{
+        width: 100%;
+        height: 30px;
+        font-size: 14px;
+        text-align: center;
+        margin-right: 0;
+    }
+    nav a{
+        line-height: 30px;
+    }
+    #read-document{
+        border: none;
+        box-shadow: none;
+    }
+    #read-document:hover{
+        border: none;
+        box-shadow: none;
+        background-color: transparent;
+    }
+    #menu{
+        display: block;
+        width: 40px;
+        height: 60px;
+        line-height: 60px;
+        border: none;
+        background: transparent;
+        position: absolute;
+        right: 10px;
+        font-size: 20px;
+        color: white;
+        text-shadow: 0px 0px 10px rgb(81,152,213);
+    }
+    #menu:focus{
+        outline: none;
+    }
+
+    /*中间部分的字体*/
+    #head-title{
+        font-size: 72px;
+    }
+    #center-block p{
+        font-size: 20px;
+    }
+    #btn-set button{
+        font-size: 18px;
+        margin-right: 0;
+        margin-top: 15px;
+    }
 }
