@@ -24,8 +24,10 @@ function Node(title, contain, creatorId) {
     this.level = 1;
     this.layerIndex = 1;
     this.id = "root-node";
+}
 
-    this.insertNode = function (node) {
+Node.prototype = {
+    insertNode : function (node) {
         node.parentNode = this;
         node.level = this.level + 1;
         this["child" + ++this.childNum] = node;
@@ -40,8 +42,8 @@ function Node(title, contain, creatorId) {
         }
         node.id = "layer" + (node.level) + "-" + (node.layerIndex);
         createIdeaOnMap(node);
-    }
-    this.removeNode = function () {
+    },
+    removeNode : function () {
         //删除自己对应的div
         var curNodeDiv = document.querySelector("#" + this.id);
         curNodeDiv.parentNode.removeChild(curNodeDiv);
@@ -68,6 +70,7 @@ function Node(title, contain, creatorId) {
         delete parNode["child" + (parNode.childNum--)];
         //调整剩余节点的位置
         adjustMindmap();
+
     }
 }
 
@@ -108,6 +111,150 @@ function removeNodeInLayer(level, layerIndex) {
                 }
             }
         }
+    }
+}
+
+function createIdeaOnMap(ideaNode) {
+    var mindmap = document.querySelector("#mindmap");
+    //在图中创建idea node
+    var container = document.createElement("div");
+    container.className = "node-container";
+    container.id = ideaNode.id;
+    var title = document.createElement("div");
+    title.className = "node-title-container";
+    title.innerHTML = ideaNode.title;
+    container.appendChild(title);
+    var contain = document.createElement("div");
+    contain.className = "node-contain-container";
+    contain.innerHTML = ideaNode.contain;
+    container.appendChild(contain);
+    mindmap.appendChild(container);
+    var addBtn = document.createElement("button");
+    addBtn.className = "node-add-button";
+    addBtn.id = ideaNode.id + "-add-btn";
+    addBtn.innerHTML = "+";
+    addBtn.onclick = onClickAddIdea;
+    container.appendChild(addBtn);
+    if (ideaNode.id !== "root-node") {
+        if (user.getUserType() === 0) {
+            //不为根节点且为管理员权限，为每个节点创建删除按钮
+            var removeBtn = document.createElement("button");
+            removeBtn.className = "node-remove-button";
+            removeBtn.id = ideaNode.id + "-remove-btn";
+            removeBtn.innerHTML = "-";
+            removeBtn.onclick = onClickRemoveIdea;
+            container.appendChild(removeBtn);
+        }
+        //默认放到父节点正右方
+        var parentDiv = document.querySelector("#" + ideaNode.parentNode.id);
+        // var parentDivRect = parentDiv.getBoundingClientRect();
+        container.style.left = (parentDiv.offsetLeft + ideaNodeWidth + ideaNodeMarginRight) + "px";
+        container.style.top = parentDiv.offsetTop + "px";
+        //在SVG图像中画node之间的连线
+        var svg = document.querySelector("svg");
+        // var line = document.createElement("line");
+        var line = document.createElementNS("http://www.w3.org/2000/svg", "line");
+        line.id = ideaNode.parentNode.id + "-to-" + ideaNode.id;
+        line.setAttribute("stroke", "rgb(68,114,196)");
+        line.setAttribute("stroke-width", "2");
+        line.setAttribute("x1", parentDiv.offsetLeft + ideaNodeWidth);
+        line.setAttribute("y1", parentDiv.offsetTop + ideaNodeHeight / 2);
+        line.setAttribute("x2", parentDiv.offsetLeft + ideaNodeWidth + ideaNodeMarginRight);
+        line.setAttribute("y2", parentDiv.offsetTop + ideaNodeHeight / 2);
+        svg.appendChild(line);
+        // 根据实际情况调整整个导图各个节点的位置
+        adjustMindmap();
+    }
+}
+
+function onClickAddIdea(e) {
+    //在点击了idea node上的添加按钮后的处理
+    //弹出表单页填写idea的标题和内容
+    var body = document.querySelector("body");
+    var floatOutDiv = document.createElement("div");
+    floatOutDiv.className = "float-out-div";
+    floatOutDiv.id = "create-room-form";
+    floatOutDiv.innerHTML = "<div class=\"fod-title\">添加IDEA</div><div class=\"fod-container\"><form><label for=\"idea_title\">IDEA标题</label></p><input id=\"idea-title\" type=\"text\" placeholder=\"请简要概括你的idea\" required maxlength=\"15\"><p><label for=\"idea_intro\">IDEA简介</label></p><textarea id=\"idea-intro\" placeholder=\"再对你的idea添加几句描述吧~\" cols=\"30\" rows=\"10\" required maxlength=\"200\"></textarea></form><div class=\"fod-button-container\"><button class=\"fod-button fod-btn-confirm\" id=\"create-idea-confirm\">确定</button><button class=\"fod-button fod-btn-cancel\">取消</button></div></div>"
+    body.insertBefore(floatOutDiv, body.childNodes[1]);
+    var mask = document.querySelector("#fod-mask");
+    mask.style.display = "block";
+    document.querySelector("#create-idea-confirm").onclick = function (event) {
+        //在表单页点击了确认按钮
+        var ideaTitle = document.querySelector("#idea-title").value;
+        var ideaIntro = document.querySelector("#idea-intro").value;
+        //向服务器发送创建idea的请求
+        var mindmapNode = {
+            'action': 'addNode',
+            'parentNode': e.target.parentNode.id,
+            'ideaTitle': ideaTitle,
+            'ideaIntro': ideaIntro,
+            'userId': userName
+        };
+        var params = {
+            'roomId': roomId,
+            'mindMap': JSON.stringify(mindmapNode),
+            'userId': userName
+        };
+        updateMindMap(params);
+
+        //移除表单页
+        mask.style.display = "none";
+        floatOutDiv.parentNode.removeChild(floatOutDiv);
+    }
+    document.querySelector(".fod-btn-cancel").onclick = function (event) {
+        //在表单页点击了取消按钮，移除表单页
+        mask.style.display = "none";
+        floatOutDiv.parentNode.removeChild(floatOutDiv);
+    }
+}
+
+
+function onClickRemoveIdea(e) {
+    //在点击了idea node上的删除按钮后的处理
+    var mindmapNode = {
+        'action': 'removeNode',
+        'nodeId': e.target.parentNode.id,
+    };
+    var params = {
+        'roomId': roomId,
+        'mindMap': JSON.stringify(mindmapNode),
+        'userId': userName
+    };
+    updateMindMap(params);
+    // var node = findNode(rootNode, div.id);
+    // node.removeNode();
+}
+
+function adjustMindmap() {
+    //只有根节点，不用调整
+    if (rootNode.childNum === 0)
+        return;
+    var maxHeight = firstLayer.maxChildNum * ideaNodeHeight + (firstLayer.maxChildNum - 1) * ideaNodeMarginTop;
+    var mindmapHeight = document.querySelector("#mindmap").clientHeight;
+    var curLayer = getLayer(2);
+    while (curLayer) {
+        //调整每层所有节点的y方向的分布
+        for (var n = 1; n <= curLayer.childNum; n++) {
+            var curId = "layer" + curLayer.level + "-" + n;
+            var curNode = findNode(rootNode, curId);
+            var parNode = curNode.parentNode;
+            var parId = parNode.id;
+            var curNodeDiv = document.querySelector("#" + curId);
+            // var top = (mindmapHeight - maxHeight)/2 + (ideaNodeHeight + ideaNodeMarginTop)*(n-1);
+            var marginTop = (maxHeight - (curLayer.childNum) * ideaNodeHeight) / (curLayer.childNum + 1);
+            var top = (mindmapHeight - maxHeight) / 2 + marginTop * n + ideaNodeHeight * (n - 1);
+            curNodeDiv.style.top = top + "px";
+            // 调整和父节点连线的终点以及和子节点连线的起点
+            var lineToParent = document.querySelector("#" + parId + "-to-" + curId);
+            lineToParent.setAttribute("y2", top + ideaNodeHeight / 2);
+            for (var k = 1; k <= curNode.childNum; k++) {
+                var childNode = curNode["child" + k];
+                var lineToChild = document.querySelector("#" + curId + "-to-" + childNode.id);
+                lineToChild.setAttribute("y1", top + ideaNodeHeight / 2);
+            }
+
+        }
+        curLayer = curLayer.childLayer;
     }
 }
 
@@ -184,194 +331,3 @@ function getLayer(level) {
     return target;
 }
 
-function createIdeaOnMap(ideaNode) {
-    var mindmap = document.querySelector("#mindmap");
-    //在图中创建idea node
-    var container = document.createElement("div");
-    container.className = "node-container";
-    container.id = ideaNode.id;
-    var title = document.createElement("div");
-    title.className = "node-title-container";
-    title.innerHTML = ideaNode.title;
-    container.appendChild(title);
-    var contain = document.createElement("div");
-    contain.className = "node-contain-container";
-    contain.innerHTML = ideaNode.contain;
-    container.appendChild(contain);
-    mindmap.appendChild(container);
-    var addBtn = document.createElement("button");
-    addBtn.className = "node-add-button";
-    addBtn.id = ideaNode.id + "-add-btn";
-    addBtn.innerHTML = "+";
-    addBtn.onclick = onClickAddIdea;
-    container.appendChild(addBtn);
-    if (ideaNode.id !== "root-node") {
-        if (user.getUserType() === 0) {
-            //不为根节点且为管理员权限，为每个节点创建删除按钮
-            var removeBtn = document.createElement("button");
-            removeBtn.className = "node-remove-button";
-            removeBtn.id = ideaNode.id + "-remove-btn";
-            removeBtn.innerHTML = "-";
-            removeBtn.onclick = onClickRemoveIdea;
-            container.appendChild(removeBtn);
-        }
-        //默认放到父节点正右方
-        var parentDiv = document.querySelector("#" + ideaNode.parentNode.id);
-        // var parentDivRect = parentDiv.getBoundingClientRect();
-        container.style.left = (parentDiv.offsetLeft + ideaNodeWidth + ideaNodeMarginRight) + "px";
-        container.style.top = parentDiv.offsetTop + "px";
-        //在SVG图像中画node之间的连线
-        var svg = document.querySelector("svg");
-        // var line = document.createElement("line");
-        var line = document.createElementNS("http://www.w3.org/2000/svg", "line");
-        line.id = ideaNode.parentNode.id + "-to-" + ideaNode.id;
-        line.setAttribute("stroke", "rgb(68,114,196)");
-        line.setAttribute("stroke-width", "2");
-        line.setAttribute("x1", parentDiv.offsetLeft + ideaNodeWidth);
-        line.setAttribute("y1", parentDiv.offsetTop + ideaNodeHeight / 2);
-        line.setAttribute("x2", parentDiv.offsetLeft + ideaNodeWidth + ideaNodeMarginRight);
-        line.setAttribute("y2", parentDiv.offsetTop + ideaNodeHeight / 2);
-        svg.appendChild(line);
-        // 根据实际情况调整整个导图各个节点的位置
-        adjustMindmap();
-    }
-}
-
-function onClickAddIdea(e) {
-    //在点击了idea node上的添加按钮后的处理
-    //to do:创建float-out-div，用户填写表单，添加确认按钮和取消按钮事件处理程序
-    var body = document.querySelector("body");
-    var floatOutDiv = document.createElement("div");
-    floatOutDiv.className = "float-out-div";
-    floatOutDiv.id = "create-room-form";
-    floatOutDiv.innerHTML = "<div class=\"fod-title\">添加IDEA</div><div class=\"fod-container\"><form><label for=\"idea_title\">IDEA标题</label></p><input id=\"idea-title\" type=\"text\" placeholder=\"请简要概括你的idea\" required maxlength=\"15\"><p><label for=\"idea_intro\">IDEA简介</label></p><textarea id=\"idea-intro\" placeholder=\"再对你的idea添加几句描述吧~\" cols=\"30\" rows=\"10\" required maxlength=\"200\"></textarea></form><div class=\"fod-button-container\"><button class=\"fod-button fod-btn-confirm\" id=\"create-idea-confirm\">确定</button><button class=\"fod-button fod-btn-cancel\">取消</button></div></div>"
-    body.insertBefore(floatOutDiv, body.childNodes[1]);
-    var mask = document.querySelector("#fod-mask");
-    mask.style.display = "block";
-    document.querySelector("#create-idea-confirm").onclick = function (event) {
-        //在表单页点击了确认按钮
-        var ideaTitle = document.querySelector("#idea-title").value;
-        var ideaIntro = document.querySelector("#idea-intro").value;
-        //to do:向服务器发送创建idea的请求
-        var mindmapNode = {
-            'action': 'addNode',
-            'parentNode': e.target.parentNode.id,
-            'ideaTitle': ideaTitle,
-            'ideaIntro': ideaIntro,
-            'userId': userName
-        };
-        var params = {
-            'roomId': roomId,
-            'mindMap': JSON.stringify(mindmapNode),
-            'userId': userName
-        };
-        updateMindMap(params);
-
-        //移除表单页
-        mask.style.display = "none";
-        floatOutDiv.parentNode.removeChild(floatOutDiv);
-    }
-    document.querySelector(".fod-btn-cancel").onclick = function (event) {
-        //在表单页点击了取消按钮，移除表单页
-        mask.style.display = "none";
-        floatOutDiv.parentNode.removeChild(floatOutDiv);
-    }
-}
-
-function addIdeaNode(parNodeId, title, contain, creatorId) {
-    var parNode = findNode(rootNode, parNodeId);
-    var childNode = new Node(title, contain, creatorId);
-    parNode.insertNode(childNode);
-}
-
-function onClickRemoveIdea(e) {
-    //在点击了idea node上的删除按钮后的处理
-    var mindmapNode = {
-        'action': 'removeNode',
-        'nodeId': e.target.parentNode.id,
-    };
-    var params = {
-        'roomId': roomId,
-        'mindMap': JSON.stringify(mindmapNode),
-        'userId': userName
-    };
-    updateMindMap(params);
-    // var node = findNode(rootNode, div.id);
-    // node.removeNode();
-}
-
-function removeIdeaNode(nodeId) {
-    var node = findNode(rootNode,nodeId);
-    node.removeNode();
-}
-
-function adjustMindmap() {
-    //只有根节点，不用调整
-    if (rootNode.childNum === 0)
-        return;
-    var maxHeight = firstLayer.maxChildNum * ideaNodeHeight + (firstLayer.maxChildNum - 1) * ideaNodeMarginTop;
-    var mindmapHeight = document.querySelector("#mindmap").clientHeight;
-    var curLayer = getLayer(2);
-    while (curLayer) {
-        //调整每层所有节点的y方向的分布
-        for (var n = 1; n <= curLayer.childNum; n++) {
-            var curId = "layer" + curLayer.level + "-" + n;
-            var curNode = findNode(rootNode, curId);
-            var parNode = curNode.parentNode;
-            var parId = parNode.id;
-            var curNodeDiv = document.querySelector("#" + curId);
-            // var top = (mindmapHeight - maxHeight)/2 + (ideaNodeHeight + ideaNodeMarginTop)*(n-1);
-            var marginTop = (maxHeight - (curLayer.childNum) * ideaNodeHeight) / (curLayer.childNum + 1);
-            var top = (mindmapHeight - maxHeight) / 2 + marginTop * n + ideaNodeHeight * (n - 1);
-            curNodeDiv.style.top = top + "px";
-            // 调整和父节点连线的终点以及和子节点连线的起点
-            var lineToParent = document.querySelector("#" + parId + "-to-" + curId);
-            lineToParent.setAttribute("y2", top + ideaNodeHeight / 2);
-            for (var k = 1; k <= curNode.childNum; k++) {
-                var childNode = curNode["child" + k];
-                var lineToChild = document.querySelector("#" + curId + "-to-" + childNode.id);
-                lineToChild.setAttribute("y1", top + ideaNodeHeight / 2);
-            }
-
-        }
-        curLayer = curLayer.childLayer;
-    }
-}
-
-var userName = '';
-var userType = '';
-var roomId = '';
-var roomTitle = '';
-var topicIntro = '';
-
-
-$(function () {
-
-    console.log('o' + getCookie('roomId'));
-    if (getCookie('code') == 'createRoom') {
-        userName = getCookie('userName');
-        userType = 0;
-        roomId = getCookie('roomId');
-        roomTitle = getCookie('roomTitle');
-        topicIntro = getCookie('topicIntro');
-    } else {
-        userName = getCookie('userName');
-        userType = 1;
-        roomId = getCookie('roomId');
-    }
-    requestMapStatus(roomId, userName);
-    // initMindMap();
-    initRoom();
-})
-
-function getCookie(cname) {
-    var ss = document.cookie;
-    var name = cname + "=";
-    var ca = document.cookie.split(';');
-    for (var i = 0; i < ca.length; i++) {
-        var c = ca[i].trim();
-        if (c.indexOf(name) == 0)
-            return c.substring(name.length, c.length);
-    }
-    return "";
-}

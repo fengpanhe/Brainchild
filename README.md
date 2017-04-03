@@ -28,3 +28,5 @@
         <link href="static/css/index.css" rel="stylesheet">
 ```
 总之文件都是以我的main.py所在目录为起始目录来加载文件.推荐用前者.
+
+### BUG

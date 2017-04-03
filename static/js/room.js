@@ -1,3 +1,43 @@
+
+var userName = '';
+var userType = '';
+var roomId = '';
+var roomTitle = '';
+var topicIntro = '';
+
+
+$(function () {
+
+    console.log('o' + getCookie('roomId'));
+    if (getCookie('code') == 'createRoom') {
+        userName = getCookie('userName');
+        userType = 0;
+        roomId = getCookie('roomId');
+        roomTitle = getCookie('roomTitle');
+        topicIntro = getCookie('topicIntro');
+    } else {
+        userName = getCookie('userName');
+        userType = 1;
+        roomId = getCookie('roomId');
+    }
+    requestMapStatus(roomId, userName);
+    // initMindMap();
+    initRoom();
+    
+    function getCookie(cname) {
+        var ss = document.cookie;
+        var name = cname + "=";
+        var ca = document.cookie.split(';');
+        for (var i = 0; i < ca.length; i++) {
+            var c = ca[i].trim();
+            if (c.indexOf(name) == 0)
+                return c.substring(name.length, c.length);
+        }
+        return "";
+    }
+})
+
+
 function initRoom(){
     //info div点击按钮隐藏功能
     var hiddeBtns = document.querySelectorAll(".info-div-btn");
@@ -21,33 +61,4 @@ function initRoom(){
         }
     }
     addNotice("邀请同伴加入吧~");
-    //to do: 请求成员列表b
-
-}
-function addMember(id,type){
-    //成员列表添加成员，0为管理员，1为用户
-    var li = document.createElement("li");
-    li.classList.add("contributor");
-    if(type === 0) //管理员类型的用户
-        li.classList.add("admin");
-    if(id === userName) //为当页用户
-        li.classList.add("me");
-
-    li.innerHTML = "<i class=\"fa fa-user-circle\"></i> " + id;
-    var ul = document.getElementById("contributor-container").getElementsByTagName("ul")[0];
-    ul.appendChild(li);
-}
-function addNotice(notice){
-    //发布公告
-    var noticeDiv = document.querySelector("#topic-intro");
-    noticeDiv.innerHTML = "<strong>[ 房间号"+roomId+" ] :</strong> " + notice;
-}
-function addNews(news){
-    var time = new Date();
-    var hour = time.getHours();
-    var minute = time.getMinutes();
-    var ul = document.getElementById("news-container").getElementsByTagName("ul")[0];
-    var li = document.createElement("li");
-    li.innerHTML = "["+hour+":"+minute+"] " + news;
-    ul.appendChild(li);
 }
