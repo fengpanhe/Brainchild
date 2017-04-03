@@ -21,7 +21,6 @@ $(function () {
         roomId = getCookie('roomId');
     }
     requestMapStatus(roomId, userName);
-    alert("after requestMapStatus");
     // initMindMap();
     initRoom();
     
@@ -61,5 +60,22 @@ function initRoom(){
             }
         }
     }
+
+    //在小尺寸屏幕上的导航栏菜单按钮功能
+    var menu = document.querySelector("#menu"); 
+    menu.onclick = function(e){
+        var nav = menu.parentNode;
+        nav.classList.toggle("expand");
+        //改图标为关闭
+        var icon = menu.firstChild;
+        if(icon.classList.contains("fa-bars")){
+            icon.classList.remove("fa-bars");
+            icon.classList.add("fa-times");
+        }else{
+            icon.classList.add("fa-bars");
+            icon.classList.remove("fa-times");          
+        }
+    };
+
     addNotice("邀请同伴加入吧~");
 }

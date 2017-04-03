@@ -151,9 +151,7 @@ function requestMapStatus(roomId, userName) {
         }
     });
 
-    websocket.addEventListener('error', function(evt){
-        alert("Websocket error!");
-    });
+    websocket.addEventListener('error', function(evt){});
 }
 
 

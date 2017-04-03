@@ -272,41 +272,70 @@ function initMindMap() {
     var beginX, beginY;
     var workingArea = document.querySelector("#working-area");
     var mindmap = document.querySelector("#mindmap");
-    workingArea.onmousedown = function (e) {
-        rdyToMove = true;
-        beginX = e.screenX;
-        beginY = e.screenY;
-    }
-    workingArea.onmousemove = function (e) {
-        if (rdyToMove) {
-            e.target.setAttribute("cursor", "move")
-            var dx = (e.screenX - beginX) * 1;
-            var dy = (e.screenY - beginY) * 1;
-            var x0 = mindmap.offsetLeft;
-            var y0 = mindmap.offsetTop;
-            mindmap.style.left = x0 + dx + "px";
-            mindmap.style.top = y0 + dy + "px";
+    if(document.documentElement.clientWidth > 756){
+        workingArea.onmousedown = function (e) {
+            rdyToMove = true;
             beginX = e.screenX;
             beginY = e.screenY;
         }
+        workingArea.onmousemove = function (e) {
+            if (rdyToMove) {
+                e.target.setAttribute("cursor", "move")
+                var dx = (e.screenX - beginX) * 1;
+                var dy = (e.screenY - beginY) * 1;
+                var x0 = mindmap.offsetLeft;
+                var y0 = mindmap.offsetTop;
+                mindmap.style.left = x0 + dx + "px";
+                mindmap.style.top = y0 + dy + "px";
+                beginX = e.screenX;
+                beginY = e.screenY;
+            }
+        }
+        workingArea.onmouseup = function (e) {
+            rdyToMove = false;
+            e.target.setAttribute("cursor", "default")
+        }
+    }else{
+        //触屏拖动支持
+        workingArea.addEventListener('touchstart', function(e){
+            console.log("touchstart");
+            rdyToMove = true;
+            beginX = e.touches[0].screenX;
+            beginY = e.touches[0].screenY;
+        });
+        workingArea.addEventListener('touchmove', function(e){
+            console.log("touchmove");
+            if (rdyToMove) {
+                e.target.setAttribute("cursor", "move")
+                var dx = (e.touches[0].screenX - beginX) * 1;
+                var dy = (e.touches[0].screenY - beginY) * 1;
+                var x0 = mindmap.offsetLeft;
+                var y0 = mindmap.offsetTop;
+                mindmap.style.left = x0 + dx + "px";
+                mindmap.style.top = y0 + dy + "px";
+                beginX = e.touches[0].screenX;
+                beginY = e.touches[0].screenY;
+            }
+        });
+        workingArea.addEventListener('touchend', function(e){
+            console.log("touchend");
+            rdyToMove = false;
+            e.target.setAttribute("cursor", "default")
+        });
     }
-    workingArea.onmouseup = function (e) {
-        rdyToMove = false;
-        e.target.setAttribute("cursor", "default")
-    }
-    //添加缩放功能
-    var sx = 100;
-    var sy = 100;
-    document.querySelector("#scale-map-expand").onclick = function (e) {
-        sx += 20;
-        sy += 20;
-        mindmap.style.transform = "scale(" + (sx / 100) + "," + (sy / 100) + ")";
-    };
-    document.querySelector("#scale-map-compress").onclick = function (e) {
-        sx -= 20;
-        sy -= 20;
-        mindmap.style.transform = "scale(" + (sx / 100) + "," + (sy / 100) + ")";
-    };
+        //添加缩放功能
+        var sx = 100;
+        var sy = 100;
+        document.querySelector("#scale-map-expand").onclick = function (e) {
+            sx += 20;
+            sy += 20;
+            mindmap.style.transform = "scale(" + (sx / 100) + "," + (sy / 100) + ")";
+        };
+        document.querySelector("#scale-map-compress").onclick = function (e) {
+            sx -= 20;
+            sy -= 20;
+            mindmap.style.transform = "scale(" + (sx / 100) + "," + (sy / 100) + ")";
+        };
 }
 
 function findNode(root, id) {
