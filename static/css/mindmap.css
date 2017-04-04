@@ -9,13 +9,14 @@
     font-family: "Hiragino Sans GB", "Microsoft YaHei","WenQuanYi Micro Hei", sans-serif;
 }
 .node-title-container{
+    position: relative;
     box-sizing: border-box;
     width: 100%;
     height: 40px;
     line-height: 40px;
     text-align: center;
     border-bottom: 2px solid rgb(68,114,196);
-    font-size: 22px;
+    font-size: 20px;
     font-weight: bold;
     color: rgb(48,94,176);
 }
@@ -65,4 +66,34 @@
     top: calc(50% - 100px);
     left: 50px;
     /*transform: translateY(-50%);*/
+}
+
+/*点赞按钮和人数*/
+.node-vote-button{
+    background: transparent;
+    width: 20px;
+    height: 40px;
+    line-height: 40px;
+    text-align: center;
+    font-size: 16px;
+    cursor: pointer;
+    color: rgb(51,122,183);
+
+    border: none;
+    position: absolute;
+    right: 20px;
+    bottom: 0;
+}
+.node-supporter-num{
+    width: 20px;
+    height: 40px;
+    line-height: 40px;
+    text-align: left;
+    font-size: 14px;
+
+    color: rgb(150,150,150);
+
+    position: absolute;
+    right: 0px;
+    bottom: 0;
 }

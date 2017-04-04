@@ -102,7 +102,7 @@ function requestMapStatus(roomId, userName) {
     console.log(roomId + userName);
     var websocket = new WebSocket(host);
 
-    websocket.addEventListener('open', function(evt){
+    websocket.addEventListener('open', function(e){
         //请求更新成员列表
         requestMemberList({
             'roomId': roomId,
@@ -114,15 +114,15 @@ function requestMapStatus(roomId, userName) {
         });
     });
 
-    websocket.addEventListener('message', function(evt){
-        var returnData = JSON.parse(evt.data);
+    websocket.addEventListener('message', function(e){
+        var returnData = JSON.parse(e.data);
         switch (returnData['returnCode']) {
             case 2: //更新节点
                 mindMapNode = JSON.parse(returnData['mindMap']);
                 console.log(mindMapNode);
                 if (mindMapNode['action'] == 'addNode') {
                     addIdeaNode(mindMapNode['parentNode'], mindMapNode['ideaTitle'], mindMapNode['ideaIntro'], mindMapNode['userId']);
-                    addNews(mindMapNode['userId'] + '添加了' + mindMapNode['ideaTitle']);
+                    // addNews(mindMapNode['userId'] + '添加了' + mindMapNode['ideaTitle']);
                 }else{
                     console.log(mindMapNode['nodeId']);
                     removeIdeaNode(mindMapNode['nodeId']);
@@ -143,15 +143,14 @@ function requestMapStatus(roomId, userName) {
                 }
                 break;
             case 5: //最新动态
-                var date = new Date();
-                addNews(date.getHours(), date.getMinutes(), returnData['news']);
+                addNews(returnData['news']);
                 break;
             default:
                 break;
         }
     });
 
-    websocket.addEventListener('error', function(evt){});
+    websocket.addEventListener('error', function(e){});
 }
 
 

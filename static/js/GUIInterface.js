@@ -3,12 +3,20 @@ function addIdeaNode(parNodeId, title, contain, creatorId) {
     var parNode = findNode(rootNode, parNodeId);
     var childNode = new Node(title, contain, creatorId);
     parNode.insertNode(childNode);
+    addNews("[+]"+creatorId+"添加了IDEA: <strong>"+title+"</strong>");
 }
 
 function removeIdeaNode(nodeId) {
-	//在思维导图中删除一个节点
+    //在思维导图中删除一个节点
     var node = findNode(rootNode,nodeId);
     node.removeNode();
+    addNews("[-]IDEA: <strong>"+title+"</strong>被删除");
+}
+
+function voteIdea(nodeId,supporterNum){
+    //点赞或取消点赞
+    var supNum = document.querySelector("#"+nodeId+"-sup-num");
+    supNum.innerHTML = supporterNum;
 }
 
 function addMember(id,type){

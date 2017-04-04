@@ -23,6 +23,7 @@ function Node(title, contain, creatorId) {
     this.parentNode = null;
     this.level = 1;
     this.layerIndex = 1;
+    this.supporterNum = 0;
     this.id = "root-node";
 }
 
@@ -120,21 +121,32 @@ function createIdeaOnMap(ideaNode) {
     var container = document.createElement("div");
     container.className = "node-container";
     container.id = ideaNode.id;
-    var title = document.createElement("div");
+    var title = document.createElement("div"); //标题
     title.className = "node-title-container";
     title.innerHTML = ideaNode.title;
     container.appendChild(title);
-    var contain = document.createElement("div");
+    var contain = document.createElement("div"); //内容
     contain.className = "node-contain-container";
     contain.innerHTML = ideaNode.contain;
     container.appendChild(contain);
     mindmap.appendChild(container);
-    var addBtn = document.createElement("button");
+    var addBtn = document.createElement("button"); //添加节点按钮
     addBtn.className = "node-add-button";
     addBtn.id = ideaNode.id + "-add-btn";
     addBtn.innerHTML = "+";
     addBtn.onclick = onClickAddIdea;
     container.appendChild(addBtn);
+    var voteBtn = document.createElement("button"); //点赞按钮
+    voteBtn.className = "node-vote-button";
+    voteBtn.id = ideaNode.id + "-vote-btn";
+    voteBtn.innerHTML = "<i class=\"fa fa-thumbs-o-up\"></i>"
+    voteBtn.onclick = onClickVoteBtn;
+    contain.appendChild(voteBtn);
+    var supporterNum = document.createElement("span"); //点赞人数
+    supporterNum.className = "node-supporter-num";
+    supporterNum.id = ideaNode.id + "-sup-num";
+    supporterNum.innerHTML = "0";
+    contain.appendChild(supporterNum);
     if (ideaNode.id !== "root-node") {
         if (user.getUserType() === 0) {
             //不为根节点且为管理员权限，为每个节点创建删除按钮
@@ -223,6 +235,35 @@ function onClickRemoveIdea(e) {
     updateMindMap(params);
     // var node = findNode(rootNode, div.id);
     // node.removeNode();
+}
+
+function onClickVoteBtn(e){
+    //点击了点赞按钮
+    var nodeId;
+    if(e.target.className === "node-vote-button"){
+        nodeId = e.target.id.slice(0,-9);
+    }else{
+        nodeId = e.target.parentNode.id.slice(0, -9);
+    }
+    var ideaNode = findNode(rootNode,nodeId);
+    var voteBtn = document.querySelector("#" + nodeId + "-vote-btn");
+    //点赞按钮icon变化
+    var i = voteBtn.firstChild;
+    if(i.classList.contains("fa-thumbs-o-up")){
+        // 尚未点赞，点赞数加一
+        i.classList.remove("fa-thumbs-o-up");
+        i.classList.add("fa-thumbs-up");
+        var supNum = ++ideaNode.supporterNum;
+        //to do:向服务器发送点赞信息，调用界面更新函数
+        voteIdea(nodeId,supNum);
+    }else{
+        // 已经点赞，取消点赞
+        i.classList.add("fa-thumbs-o-up");
+        i.classList.remove("fa-thumbs-up");
+        var supNum = --ideaNode.supporterNum;
+        //to do:向服务器取消点赞信息，调用界面更新函数
+        voteIdea(nodeId,supNum);
+    }
 }
 
 function adjustMindmap() {
