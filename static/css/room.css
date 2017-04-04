@@ -98,7 +98,7 @@ nav a{
     /*padding-top: 40px;*/
 }
 #mindmap{
-    width: 100%;
+    min-width: 100%;
     min-height: 100%;
     box-sizing: border-box;
     position: absolute;
@@ -195,7 +195,7 @@ nav a{
     content:"(You)";
 }
 /*放大和缩小按钮*/
-#scale-map-expand,#scale-map-compress{
+.mindmap-func{
     position: absolute;
     left: 40px;
     bottom: 30px;
@@ -212,14 +212,20 @@ nav a{
     transition: all 0.2s;
     box-shadow: 0 0px 7px #afafaf;
 }
-#scale-map-expand:hover,#scale-map-compress:hover{
+.mindmap-func:hover{
     background-color: rgb(215,66,72);
 }
 #scale-map-expand{
-    left: 80px;
+    left: 60px;
 }
 #scale-map-compress{
-    left: 160px;
+    left: 120px;
+}
+#mindmap-to-png{
+    left: 180px;
+}
+.png{
+    position: absolute;
 }
 /*svg*/
 svg{

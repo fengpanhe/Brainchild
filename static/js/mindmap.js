@@ -15,7 +15,7 @@ function Layer(level) {
     this.childNum = 1;
 }
 
-function Node(title, contain, creatorId) {
+function IdeaNode(title, contain, creatorId) {
     this.childNum = 0;
     this.creatorId = creatorId;
     this.title = title;
@@ -27,7 +27,7 @@ function Node(title, contain, creatorId) {
     this.id = "root-node";
 }
 
-Node.prototype = {
+IdeaNode.prototype = {
     insertNode : function (node) {
         node.parentNode = this;
         node.level = this.level + 1;
@@ -301,7 +301,7 @@ function adjustMindmap() {
 
 function initMindMap() {
     user = new User(userName, userType);
-    rootNode = new Node(roomTitle, topicIntro, "房主");
+    rootNode = new IdeaNode(roomTitle, topicIntro, "房主");
     firstLayer = {
         level: 1,
         childNum: 1,

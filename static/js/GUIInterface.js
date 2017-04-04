@@ -1,7 +1,7 @@
 function addIdeaNode(parNodeId, title, contain, creatorId) {
 	//向思维导图中添加一个节点
     var parNode = findNode(rootNode, parNodeId);
-    var childNode = new Node(title, contain, creatorId);
+    var childNode = new IdeaNode(title, contain, creatorId);
     parNode.insertNode(childNode);
     addNews("[+]"+creatorId+"添加了IDEA: <strong>"+title+"</strong>");
 }
