@@ -9,8 +9,8 @@ function addIdeaNode(parNodeId, title, contain, creatorId) {
 function removeIdeaNode(nodeId) {
     //在思维导图中删除一个节点
     var node = findNode(rootNode,nodeId);
+    addNews("[-]IDEA: <strong>"+node.title+"</strong>被删除");
     node.removeNode();
-    addNews("[-]IDEA: <strong>"+title+"</strong>被删除");
 }
 
 function voteIdea(nodeId,supporterNum){

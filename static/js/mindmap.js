@@ -1,5 +1,5 @@
-const ideaNodeHeight = 204;
-const ideaNodeWidth = 304;
+// const ideaNodeHeight = 204;
+// const ideaNodeWidth = 304;
 const ideaNodeMarginRight = 80;
 const ideaNodeMarginTop = 80;
 const navHeight = 61;
@@ -16,10 +16,10 @@ function Layer(level) {
 }
 
 function IdeaNode(title, contain, creatorId) {
-    this.childNum = 0;
     this.creatorId = creatorId;
     this.title = title;
     this.contain = contain;
+    this.childNum = 0;
     this.parentNode = null;
     this.level = 1;
     this.layerIndex = 1;
@@ -32,6 +32,7 @@ IdeaNode.prototype = {
         node.parentNode = this;
         node.level = this.level + 1;
         this["child" + ++this.childNum] = node;
+        node.nodeIndex = this.childNum; //为父节点的第几个子节点
         node.layerIndex = 1; //为当前层第几个idea node    
         var currentLayer = getLayer(node.level);
         if (!currentLayer) {
@@ -42,14 +43,19 @@ IdeaNode.prototype = {
             firstLayer.maxChildNum = (currentLayer.childNum > firstLayer.maxChildNum) ? currentLayer.childNum : firstLayer.maxChildNum;
         }
         node.id = "layer" + (node.level) + "-" + (node.layerIndex);
+        // 在导图中渲染节点
         createIdeaOnMap(node);
+        // 更新节点中的subtreeHeight
+        updateSubtreeHeight(this);
+        // 根据实际情况调整整个导图各个节点的位置
+        renderMindmap();
     },
     removeNode : function () {
+        var parNode = this.parentNode;
         //删除自己对应的div
         var curNodeDiv = document.querySelector("#" + this.id);
         curNodeDiv.parentNode.removeChild(curNodeDiv);
         //删除父节点和自己的连线
-        var parNode = this.parentNode;
         var lineFromPar = document.querySelector("#" + parNode.id + "-to-" + this.id);
         lineFromPar.parentNode.removeChild(lineFromPar);
         removeNodeInLayer(this.level, this.layerIndex);
@@ -65,12 +71,16 @@ IdeaNode.prototype = {
         for (var n = 1; n <= parNode.childNum; n++) {
             if (parNode["child" + n].id === this.id && flag === 0)
                 flag = n;
-            if (flag > 0 && n > flag)
+            if (flag > 0 && n > flag){
+                parNode["child" + n].nodeIndex --;
                 parNode["child" + (n - 1)] = parNode["child" + n];
+            }
         }
-        delete parNode["child" + (parNode.childNum--)];
+        delete parNode["child" + parNode.childNum--];
+        // 更新节点中的subtreeHeight
+        updateSubtreeHeight(parNode);
         //调整剩余节点的位置
-        adjustMindmap();
+        renderMindmap();
 
     }
 }
@@ -141,12 +151,20 @@ function createIdeaOnMap(ideaNode) {
     voteBtn.id = ideaNode.id + "-vote-btn";
     voteBtn.innerHTML = "<i class=\"fa fa-thumbs-o-up\"></i>"
     voteBtn.onclick = onClickVoteBtn;
-    contain.appendChild(voteBtn);
+    title.appendChild(voteBtn);
     var supporterNum = document.createElement("span"); //点赞人数
     supporterNum.className = "node-supporter-num";
     supporterNum.id = ideaNode.id + "-sup-num";
     supporterNum.innerHTML = "0";
-    contain.appendChild(supporterNum);
+    title.appendChild(supporterNum);
+    // 记录节点呈现出来的宽度和高度
+    ideaNode.width = container.offsetWidth;
+    ideaNode.height = container.offsetHeight;
+    // 以该节点为根节点的子树的高度
+    ideaNode.subtreeHeight = ideaNode.height;
+    // 判断该层的最大宽度是否发生了变化
+    updateLayerMaxWidth(ideaNode);
+
     if (ideaNode.id !== "root-node") {
         if (user.getUserType() === 0) {
             //不为根节点且为管理员权限，为每个节点创建删除按钮
@@ -158,10 +176,11 @@ function createIdeaOnMap(ideaNode) {
             container.appendChild(removeBtn);
         }
         //默认放到父节点正右方
-        var parentDiv = document.querySelector("#" + ideaNode.parentNode.id);
+        var parentNode = ideaNode.parentNode;
+        var parentDiv = document.querySelector("#" + parentNode.id);
         // var parentDivRect = parentDiv.getBoundingClientRect();
-        container.style.left = (parentDiv.offsetLeft + ideaNodeWidth + ideaNodeMarginRight) + "px";
-        container.style.top = parentDiv.offsetTop + "px";
+        // container.style.left = (parentDiv.offsetLeft + ideaNodeWidth + ideaNodeMarginRight) + "px";
+        // container.style.top = parentDiv.offsetTop + "px";
         //在SVG图像中画node之间的连线
         var svg = document.querySelector("svg");
         // var line = document.createElement("line");
@@ -169,13 +188,83 @@ function createIdeaOnMap(ideaNode) {
         line.id = ideaNode.parentNode.id + "-to-" + ideaNode.id;
         line.setAttribute("stroke", "rgb(68,114,196)");
         line.setAttribute("stroke-width", "2");
-        line.setAttribute("x1", parentDiv.offsetLeft + ideaNodeWidth);
-        line.setAttribute("y1", parentDiv.offsetTop + ideaNodeHeight / 2);
-        line.setAttribute("x2", parentDiv.offsetLeft + ideaNodeWidth + ideaNodeMarginRight);
-        line.setAttribute("y2", parentDiv.offsetTop + ideaNodeHeight / 2);
+        line.setAttribute("x1", parentDiv.offsetLeft + parentNode.width);
+        line.setAttribute("y1", parentDiv.offsetTop + parentNode.height/2);
+        // line.setAttribute("x2", parentDiv.offsetLeft + ideaNodeWidth + ideaNodeMarginRight);
+        // line.setAttribute("y2", parentDiv.offsetTop + ideaNodeHeight / 2);
         svg.appendChild(line);
-        // 根据实际情况调整整个导图各个节点的位置
-        adjustMindmap();
+    }
+}
+function updateSubtreeHeight(node){
+    var nodeHeight = node.height;
+    //计算子树应有的总高度（不含该节点本身）
+    var subtreeHeight = 0 - ideaNodeMarginTop;
+    for(var n=1;n<=node.childNum;n++){
+        subtreeHeight += ideaNodeMarginTop + node["child"+n].subtreeHeight;
+    }
+    node.childrenMaxHeight = subtreeHeight; //以该节点为根节点的子树总高度（不含该节点本身）
+    subtreeHeight = (subtreeHeight>nodeHeight) ? subtreeHeight : nodeHeight; 
+    if(node.subtreeHeight !== subtreeHeight){
+        //该节点的subtreeHeight发生了变化
+        node.subtreeHeight = subtreeHeight;
+        if(node.parentNode){
+            //不为根节点，向上层节点调整subtreeHeight
+            updateSubtreeHeight(node.parentNode);
+        }
+    }
+}
+function updateLayerMaxWidth(node){
+    var layer = getLayer(node.level);
+    if(layer.childNum === 1){
+        //为当前层第一个节点
+        layer.maxWidth = node.width;
+    }else{
+        layer.maxWidth = (node.width > layer.maxWidth) ? node.width : layer.maxWidth;
+    }
+}
+function renderMindmap() {
+    //只有根节点，不用调整
+    if (rootNode.childNum === 0)
+        return;
+    // var maxHeight = firstLayer.maxChildNum * ideaNodeHeight + (firstLayer.maxChildNum - 1) * ideaNodeMarginTop;
+    var mindmapHeight = document.querySelector("#mindmap").clientHeight;
+    var curLayer = getLayer(2);
+    while (curLayer) {
+        for (var n = 1; n <= curLayer.childNum; n++) {
+            var curId = "layer" + curLayer.level + "-" + n;
+            var curNode = findNode(rootNode, curId);
+            var parNode = curNode.parentNode;
+            var parId = parNode.id;
+            var parNodeDiv = document.querySelector("#" + parId);
+            var curNodeDiv = document.querySelector("#" + curId);
+            //根据前一个兄弟节点计算其y方向位置
+            var top;
+            if(curNode.nodeIndex === 1){
+                top = parNodeDiv.offsetTop + parNodeDiv.offsetHeight/2 - parNode.childrenMaxHeight/2; //起始位置
+            }else{
+                var previousSibling = parNode["child"+(curNode.nodeIndex-1)]; //前一个兄弟节点
+                previousSiblingDiv = document.querySelector("#"+previousSibling.id);
+                top = previousSiblingDiv.offsetTop + previousSiblingDiv.offsetHeight/2 + previousSibling.subtreeHeight/2 
+                      + ideaNodeMarginTop + curNode.subtreeHeight/2 - curNodeDiv.offsetHeight/2;
+            }
+            //根据父节点位置和当前层最大宽度计算其x方向位置
+            var left = parNodeDiv.offsetLeft + parNode.width/2 + curLayer.parentLayer.maxWidth/2 + ideaNodeMarginRight;
+            //调整节点位置
+            curNodeDiv.style.left = left + "px";
+            curNodeDiv.style.top = top + "px";
+            // 调整和父节点连线的终点以及和子节点连线的起点
+            var lineFromParent = document.querySelector("#" + parId + "-to-" + curId);
+            lineFromParent.setAttribute("x2", left);
+            lineFromParent.setAttribute("y2", top + curNode.height/2);
+            for (var k = 1; k <= curNode.childNum; k++) {
+                var childNode = curNode["child" + k];
+                var lineToChild = document.querySelector("#" + curId + "-to-" + childNode.id);
+                lineToChild.setAttribute("x1", left + curNode.width);
+                lineToChild.setAttribute("y1", top + curNode.height / 2);
+            }
+
+        }
+        curLayer = curLayer.childLayer;
     }
 }
 
@@ -263,39 +352,6 @@ function onClickVoteBtn(e){
         var supNum = --ideaNode.supporterNum;
         //to do:向服务器取消点赞信息，调用界面更新函数
         voteIdea(nodeId,supNum);
-    }
-}
-
-function adjustMindmap() {
-    //只有根节点，不用调整
-    if (rootNode.childNum === 0)
-        return;
-    var maxHeight = firstLayer.maxChildNum * ideaNodeHeight + (firstLayer.maxChildNum - 1) * ideaNodeMarginTop;
-    var mindmapHeight = document.querySelector("#mindmap").clientHeight;
-    var curLayer = getLayer(2);
-    while (curLayer) {
-        //调整每层所有节点的y方向的分布
-        for (var n = 1; n <= curLayer.childNum; n++) {
-            var curId = "layer" + curLayer.level + "-" + n;
-            var curNode = findNode(rootNode, curId);
-            var parNode = curNode.parentNode;
-            var parId = parNode.id;
-            var curNodeDiv = document.querySelector("#" + curId);
-            // var top = (mindmapHeight - maxHeight)/2 + (ideaNodeHeight + ideaNodeMarginTop)*(n-1);
-            var marginTop = (maxHeight - (curLayer.childNum) * ideaNodeHeight) / (curLayer.childNum + 1);
-            var top = (mindmapHeight - maxHeight) / 2 + marginTop * n + ideaNodeHeight * (n - 1);
-            curNodeDiv.style.top = top + "px";
-            // 调整和父节点连线的终点以及和子节点连线的起点
-            var lineToParent = document.querySelector("#" + parId + "-to-" + curId);
-            lineToParent.setAttribute("y2", top + ideaNodeHeight / 2);
-            for (var k = 1; k <= curNode.childNum; k++) {
-                var childNode = curNode["child" + k];
-                var lineToChild = document.querySelector("#" + curId + "-to-" + childNode.id);
-                lineToChild.setAttribute("y1", top + ideaNodeHeight / 2);
-            }
-
-        }
-        curLayer = curLayer.childLayer;
     }
 }
 

@@ -82,7 +82,6 @@ function initRoom(){
     document.querySelector("#mindmap-to-png").onclick = function(e){
         var mindmapDOM = document.querySelector("#mindmap");
         html2canvas(document.getElementById("mindmap")).then(function(canvas){
-            console.log("RENERED");
             var img = document.createElement("img");
             img.src = canvas.toDataURL();
             document.querySelector("#working-area").appendChild(img);            
