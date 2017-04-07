@@ -9,6 +9,13 @@
     max-width: 380px;
     position: absolute;
     font-family: "Hiragino Sans GB", "Microsoft YaHei","WenQuanYi Micro Hei", sans-serif;
+    z-index: 200;
+}
+svg{
+    z-index: 100;
+}
+.info-div{
+    z-index: 50;
 }
 .node-title-container{
     position: relative;
@@ -68,9 +75,7 @@
 }
 #root-node{
     position: absolute;
-    top: calc(50% - 100px);
     left: 50px;
-    /*transform: translateY(-50%);*/
 }
 
 /*点赞按钮和人数*/

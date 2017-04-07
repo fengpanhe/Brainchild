@@ -193,6 +193,9 @@ function createIdeaOnMap(ideaNode) {
         // line.setAttribute("x2", parentDiv.offsetLeft + ideaNodeWidth + ideaNodeMarginRight);
         // line.setAttribute("y2", parentDiv.offsetTop + ideaNodeHeight / 2);
         svg.appendChild(line);
+    }else{
+        console.log(container);
+        container.style.top = document.querySelector("#working-area").offsetHeight/2 - container.offsetHeight/2 + "px";
     }
 }
 function updateSubtreeHeight(node){
@@ -210,6 +213,24 @@ function updateSubtreeHeight(node){
         if(node.parentNode){
             //不为根节点，向上层节点调整subtreeHeight
             updateSubtreeHeight(node.parentNode);
+        }else{
+            //调整完根节点，判断图是否超过了容器
+            var mindmap = document.querySelector("#mindmap");
+            var svg = document.querySelector("svg");
+            var curHeight = mindmap.offsetHeight;
+            var maxHeight = rootNode.subtreeHeight + 2*ideaNodeMarginTop;
+            if(maxHeight > curHeight){
+                //调整#mindmap和svg的大小
+                mindmap.style.height = maxHeight + "px";
+                svg.style.height = maxHeight + "px";
+                svg.setAttribute("height", maxHeight);
+                //调整根节点位置（使其始终垂直居中于容器）
+                var rootNodeDiv = document.querySelector("#root-node");
+                rootNodeDiv.style.top = maxHeight/2 - rootNodeDiv.offsetHeight/2 + "px";
+                console.log(rootNodeDiv.style.top);
+                //调整#mindmap位置使得在用户眼中图的位置未变
+                mindmap.style.top = parseFloat(mindmap.style.top) - (maxHeight - curHeight)/2 + "px"; 
+            }
         }
     }
 }
@@ -221,13 +242,35 @@ function updateLayerMaxWidth(node){
     }else{
         layer.maxWidth = (node.width > layer.maxWidth) ? node.width : layer.maxWidth;
     }
+    //图的宽度是否超过了容器
+    var curLayer = firstLayer;
+    var maxWidth = ideaNodeMarginRight; //全图最大宽度
+    while(curLayer){
+        maxWidth += curLayer.maxWidth + ideaNodeMarginRight;
+        curLayer = curLayer.childLayer;
+    }
+    var mindmap = document.querySelector("#mindmap");
+    var curWidth = mindmap.offsetWidth;
+    if(maxWidth > curWidth){
+        mindmap.style.width = maxWidth + "px";
+        svg.style.width = maxWidth + "px";
+        svg.setAttribute("width", maxWidth);
+    }
 }
 function renderMindmap() {
-    //只有根节点，不用调整
-    if (rootNode.childNum === 0)
+    //只有根节点
+    if (rootNode.childNum === 0){
         return;
-    // var maxHeight = firstLayer.maxChildNum * ideaNodeHeight + (firstLayer.maxChildNum - 1) * ideaNodeMarginTop;
-    var mindmapHeight = document.querySelector("#mindmap").clientHeight;
+    }
+    //调整根节点和子节点的连线
+    var rootNodeDiv = document.querySelector("#root-node");
+    for (var k = 1; k <= rootNode.childNum; k++) {
+        var childNode = rootNode["child" + k];
+        var lineToChild = document.querySelector("#" + "root-node" + "-to-" + childNode.id);
+        lineToChild.setAttribute("x1", rootNodeDiv.offsetLeft + rootNode.width);
+        lineToChild.setAttribute("y1", rootNodeDiv.offsetTop + rootNode.height / 2);
+    }
+    //调整其他节点
     var curLayer = getLayer(2);
     while (curLayer) {
         for (var n = 1; n <= curLayer.childNum; n++) {
@@ -237,7 +280,7 @@ function renderMindmap() {
             var parId = parNode.id;
             var parNodeDiv = document.querySelector("#" + parId);
             var curNodeDiv = document.querySelector("#" + curId);
-            //根据前一个兄弟节点计算其y方向位置
+            //根据前一个兄弟节点和父节点计算其y方向位置
             var top;
             if(curNode.nodeIndex === 1){
                 top = parNodeDiv.offsetTop + parNodeDiv.offsetHeight/2 - parNode.childrenMaxHeight/2; //起始位置
@@ -262,7 +305,6 @@ function renderMindmap() {
                 lineToChild.setAttribute("x1", left + curNode.width);
                 lineToChild.setAttribute("y1", top + curNode.height / 2);
             }
-
         }
         curLayer = curLayer.childLayer;
     }

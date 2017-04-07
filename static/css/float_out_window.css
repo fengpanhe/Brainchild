@@ -6,7 +6,7 @@
     left: 50%;
     transform: translate(-50%,-50%);
     font-family: "Hiragino Sans GB", "Microsoft YaHei","WenQuanYi Micro Hei", sans-serif;
-    z-index: 100;
+    z-index: 301;
     background-color: white;
 }
 .float-out-div *{
@@ -82,5 +82,5 @@
     background-color: rgba(0,0,0,0.7);
     position: fixed;
     display: none;
-    z-index: 99;
+    z-index: 300;
 }

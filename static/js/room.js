@@ -80,11 +80,37 @@ function initRoom(){
     addNotice("邀请同伴加入吧~");
 
     document.querySelector("#mindmap-to-png").onclick = function(e){
-        var mindmapDOM = document.querySelector("#mindmap");
-        html2canvas(document.getElementById("mindmap")).then(function(canvas){
-            var img = document.createElement("img");
-            img.src = canvas.toDataURL();
-            document.querySelector("#working-area").appendChild(img);            
-        });
+        var mindmap = document.querySelector("#mindmap");
+        var svg = document.querySelector("svg");
+        mindmap.removeChild(svg); //不用html2canvas渲染svg元素
+        var h = mindmap.ownerDocument.defaultView.innerHeight;
+        var w = mindmap.ownerDocument.defaultView.innerWidth;
+        mindmap.ownerDocument.defaultView.innerHeight = mindmap.offsetHeight;
+        mindmap.ownerDocument.defaultView.innerWidth = mindmap.offsetWidth;
+        var top = mindmap.style.top;
+        var left = mindmap.style.left;
+        mindmap.style.top = 0 - ideaNodeMarginTop + "px";
+        mindmap.style.left = 0 + ideaNodeMarginRight + "px";
+        html2canvas(mindmap,{
+            // height: mindmap.offsetHeight,width: mindmap.offsetWidth})
+            })
+            .then(function(canvas){
+                mindmap.appendChild(svg);
+                // HTML ELement渲染完毕
+                svg.style.position = "relative";
+                svg.style.width = mindmap.offsetWidth + "px";
+                svg.setAttribute("width",mindmap.offsetWidth);
+                svg.style.height = mindmap.offsetHeight + "px";
+                svg.setAttribute("height",mindmap.offsetHeight);
+                // 渲染svg元素
+                canvg(canvas,svg.outerHTML,{ ignoreDimensions: true,ignoreClear: true,offsetY: -20});
+                // 改回样式
+                mindmap.ownerDocument.defaultView.innerHeight = h;
+                mindmap.ownerDocument.defaultView.innerWidth = w;
+                mindmap.style.top = top;
+                mindmap.style.left = left;
+                var src = canvas.toDataURL();
+                window.open(src);
+            });
     };
 }
