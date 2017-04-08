@@ -9,6 +9,7 @@ class User(object):
     def __init__(self, name, callback):
         self.user_name = name
         self.user_id = name
+        self.user_type = name
         self.callback = callback
 
     def get_callback(self):
