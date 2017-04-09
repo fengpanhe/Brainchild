@@ -14,6 +14,7 @@ from mod.handler.RequestMemberList import *
 from mod.handler.RequestMindStartInfo import *
 from mod.handler.RoomHandler import *
 from mod.handler.UpdateMapHandler import *
+from mod.handler.VoteActionHandler import *
 
 import tornado.web
 import tornado.websocket
@@ -40,6 +41,7 @@ class Application(tornado.web.Application):
             (r'/requestMemberList', RequestMemberList),
             (r'/requestMindStartInfo', RequestMindStartInfo),
             (r'/updateMindMap', UpdateMapHandler),
+            (r'/requestVoteAction', VoteActionHandler),
             (r'/status/(\w+\=\w+\&\w+\=\w+)', MapStatusHandler)
             
         ]

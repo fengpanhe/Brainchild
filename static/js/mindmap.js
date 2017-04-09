@@ -400,7 +400,8 @@ function onClickVoteBtn(e){
     var params = {
         'roomId': roomId,
         'action': action,
-        'nodeId': nodeId
+        'nodeId': nodeId,
+        'userId': userName
     };
     requestVoteAction(params);
 }

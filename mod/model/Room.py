@@ -86,3 +86,16 @@ class Room(object):
                 }
                 return mind_start_info
         return False
+
+    def vote_action(self,user_id, action, node_id):
+        logger.info([user_id, action, node_id])
+        for user in self.users:
+            if user_id == user.user_name:
+                params = {
+                    'returnCode': 6,
+                    'action': action,
+                    'nodeId': nodeId
+                }
+                self.notify_callbacks(params)
+                return True
+        return False

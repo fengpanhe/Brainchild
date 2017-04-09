@@ -64,3 +64,10 @@ class Rooms(object):
         if not (room_id in self.rooms):
             return False
         return self.rooms[room_id].get_mind_start(user_id)
+
+    def vote_action(self,room_id, user_id, action, node_id):
+        logger.info([room_id, user_id, action, node_id])
+        if not (room_id in self.rooms):
+            return False
+        return self.rooms[room_id].vote_action(user_id, action, node_id)
+        

@@ -145,6 +145,11 @@ function requestMapStatus(roomId, userName) {
             case 5: //最新动态
                 addNews(returnData['news']);
                 break;
+            case 6: //点赞
+                if(returnData['action'] == 'vote'){
+                    
+                }
+                break;
             default:
                 break;
         }
@@ -252,5 +257,31 @@ function requestMindStartInfo(params) {
 }
 
 function requestVoteAction(params){
+    console.log(params);
+    $.ajax({
+        type: 'POST',
+        url: "/requestVoteAction",
+        data: params,
+        dataType: 'json',
+        success: function (responseData, textStatus, jqXHR) {
+            console.log("make success");
+            console.log(responseData);
 
+            switch (responseData['returnCode']) {
+                case 1:
+                    console.log('成功更新');
+                    return true;
+                case 0:
+                    alert('加入失败');
+                    return false;
+                default:
+                    alert('未知错误');
+                    return false;
+            }
+        },
+        error: function (responseData, textStatus, errorThrown) {
+            console.log("make error");
+            alert('POST failed.');
+        }
+    });
 }
