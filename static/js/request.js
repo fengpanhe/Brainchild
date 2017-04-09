@@ -250,3 +250,7 @@ function requestMindStartInfo(params) {
         }
     });
 }
+
+function requestVoteAction(params){
+
+}

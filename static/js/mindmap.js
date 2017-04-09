@@ -370,7 +370,7 @@ function onClickRemoveIdea(e) {
 
 function onClickVoteBtn(e){
     //点击了点赞按钮
-    var nodeId;
+    var nodeId,action;
     if(e.target.className === "node-vote-button"){
         nodeId = e.target.id.slice(0,-9);
     }else{
@@ -382,6 +382,7 @@ function onClickVoteBtn(e){
     var i = voteBtn.firstChild;
     if(i.classList.contains("fa-thumbs-o-up")){
         // 尚未点赞，点赞数加一
+        action = "vote";
         i.classList.remove("fa-thumbs-o-up");
         i.classList.add("fa-thumbs-up");
         var supNum = ++ideaNode.supporterNum;
@@ -389,12 +390,19 @@ function onClickVoteBtn(e){
         voteIdea(nodeId,supNum);
     }else{
         // 已经点赞，取消点赞
+        action = "cancel-vote";
         i.classList.add("fa-thumbs-o-up");
         i.classList.remove("fa-thumbs-up");
         var supNum = --ideaNode.supporterNum;
         //to do:向服务器取消点赞信息，调用界面更新函数
         voteIdea(nodeId,supNum);
     }
+    var params = {
+        'roomId': roomId,
+        'action': action,
+        'nodeId': nodeId
+    };
+    requestVoteAction(params);
 }
 
 function initMindMap() {
