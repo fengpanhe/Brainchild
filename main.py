@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-from mod.control.User import *
-from mod.control.Room import *
-from mod.control.Rooms import *
+from mod.model.User import *
+from mod.model.Room import *
+from mod.model.Rooms import *
 
 from mod.handler.CreateRoomHandler import *
 from mod.handler.IndexHandler import *
@@ -25,6 +25,7 @@ import tornado.options
 import json
 import string
 import IPython
+
 
 class Application(tornado.web.Application):
     def __init__(self):

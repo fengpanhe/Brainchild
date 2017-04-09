@@ -5,6 +5,6 @@ import tornado.ioloop
 import tornado.options
 import json
 from mod.config.logger import *
-from mod.control.User import *
-from mod.control.Room import *
-from mod.control.Rooms import *
+from mod.model.User import *
+from mod.model.Room import *
+from mod.model.Rooms import *

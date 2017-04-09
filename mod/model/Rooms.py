@@ -4,7 +4,7 @@
 
 import random
 
-from mod.control.Room import Room
+from mod.model.Room import Room
 from mod.config.logger import *
 
 class Rooms(object):
