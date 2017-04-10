@@ -95,7 +95,7 @@ function initRoom(){
             // height: mindmap.offsetHeight,width: mindmap.offsetWidth})
             })
             .then(function(canvas){
-                mindmap.appendChild(svg);
+                mindmap.insertBefore(svg,mindmap.firstChild);
                 // HTML ELement渲染完毕
                 svg.style.position = "relative";
                 svg.style.width = mindmap.offsetWidth + "px";
