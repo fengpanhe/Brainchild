@@ -57,9 +57,9 @@
     margin-right: 10px;
     margin-bottom: 10px;
     border: none;
-    color: white;
     cursor: pointer;
     transition: all 0.3s;
+    color: white;
 }
 .fod-btn-confirm{
     background-color: rgb(68,114,196);
