@@ -7,7 +7,7 @@
 li{
     list-style: none;
 }
-button{
+button:focus{
     outline: none;
 }
 /*Web字体*/
@@ -245,10 +245,9 @@ svg{
 /*层级结构*/
 nav{z-index: 200;}
 #working-area{z-index: 10;}
-#mindmap-func{z-index: 150;}
+.mindmap-func{z-index: 150;}
 .info-div{z-index: 160;}
-svg{z-index: 140;}
-.node-container{z-index: 149;}
+#mindmap{z-index: 140;}
 @media (max-width: 756px){
     /*在小尺寸屏幕上导航栏重布局*/
     nav{

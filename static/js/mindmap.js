@@ -475,14 +475,16 @@ function initMindMap() {
         var sx = 100;
         var sy = 100;
         document.querySelector("#scale-map-expand").onclick = function (e) {
-            sx += 20;
-            sy += 20;
+            sx += 10;
+            sy += 10;
             mindmap.style.transform = "scale(" + (sx / 100) + "," + (sy / 100) + ")";
         };
         document.querySelector("#scale-map-compress").onclick = function (e) {
-            sx -= 20;
-            sy -= 20;
-            mindmap.style.transform = "scale(" + (sx / 100) + "," + (sy / 100) + ")";
+            if(sx - 10 > 0){
+                sx -= 10;
+                sy -= 10;
+                mindmap.style.transform = "scale(" + (sx / 100) + "," + (sy / 100) + ")";
+            }
         };
 }
 

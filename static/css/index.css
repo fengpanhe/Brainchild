@@ -28,6 +28,7 @@ button:focus{
 }
 
 #brand,#head-title{
+    font-family: serif;
     font-family: "Lobster",serif;
 }
 
