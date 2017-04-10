@@ -146,9 +146,9 @@ function requestMapStatus(roomId, userName) {
                 addNews(returnData['news']);
                 break;
             case 6: //点赞
-                if(returnData['action'] == 'vote'){
-                    
-                }
+                var nodeId = returnData['nodeId'];
+                var action = returnData['action'];
+                voteIdea(nodeId,action)
                 break;
             default:
                 break;

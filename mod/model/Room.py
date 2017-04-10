@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 # from User import *
 from mod.config.logger import *
-
+from mod.model.MindMap import MindMap
 
 class Room(object):
     # room_id = ""
@@ -17,7 +17,7 @@ class Room(object):
         self.room_id = room_id
         self.room_title = room_title
         self.topic_intro = topic_intro
-        self.mind_map = mind_map
+        self.mind_map = MindMap()
         self.creator_id = creator_id
         self.users = []
         self.member_list = []
@@ -51,7 +51,10 @@ class Room(object):
     def update_mind_map(self, mind_map, user_id):
         for user in self.users:
             if user_id == user.user_name:
-                self.mind_map = mind_map
+
+                # if mind_map['action'] == 'addNode':
+                #     self.mind_map.insert_node()
+                
                 params = {
                     'returnCode': 2,
                     'mindMap': mind_map
@@ -94,7 +97,7 @@ class Room(object):
                 params = {
                     'returnCode': 6,
                     'action': action,
-                    'nodeId': nodeId
+                    'nodeId': node_id
                 }
                 self.notify_callbacks(params)
                 return True

@@ -385,17 +385,17 @@ function onClickVoteBtn(e){
         action = "vote";
         i.classList.remove("fa-thumbs-o-up");
         i.classList.add("fa-thumbs-up");
-        var supNum = ++ideaNode.supporterNum;
+        // var supNum = ++ideaNode.supporterNum;
         //to do:向服务器发送点赞信息，调用界面更新函数
-        voteIdea(nodeId,supNum);
+        // voteIdea(nodeId,supNum);
     }else{
         // 已经点赞，取消点赞
         action = "cancel-vote";
         i.classList.add("fa-thumbs-o-up");
         i.classList.remove("fa-thumbs-up");
-        var supNum = --ideaNode.supporterNum;
+        // var supNum = --ideaNode.supporterNum;
         //to do:向服务器取消点赞信息，调用界面更新函数
-        voteIdea(nodeId,supNum);
+        // voteIdea(nodeId,supNum);
     }
     var params = {
         'roomId': roomId,
