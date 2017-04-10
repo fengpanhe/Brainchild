@@ -29,7 +29,7 @@ function voteIdea(nodeId,action){
 
 function addMember(id,type){
     //成员列表添加成员，0为管理员，1为用户
-    var li = document.createElement("li");
+    var li = document.createElement("li"); 
     li.classList.add("contributor");
     if(type === 0) //管理员类型的用户
         li.classList.add("admin");

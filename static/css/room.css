@@ -248,7 +248,6 @@ nav{z-index: 200;}
 .mindmap-func{z-index: 150;}
 .info-div{z-index: 160;}
 #mindmap{z-index: 140;}
-.node-container{z-index: 149;}
 @media (max-width: 756px){
     /*在小尺寸屏幕上导航栏重布局*/
     nav{
