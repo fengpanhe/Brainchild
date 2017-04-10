@@ -13,10 +13,18 @@ function removeIdeaNode(nodeId) {
     node.removeNode();
 }
 
-function voteIdea(nodeId,supporterNum){
+function voteIdea(nodeId,action){
     //点赞或取消点赞
+    var node = findNode(rootNode,nodeId);
+    if(action === "vote"){
+        //点赞
+        node.supporterNum++;
+    }else if(action === "cancel-vote"){
+        //取消点赞
+        node.supporterNum--;
+    }
     var supNum = document.querySelector("#"+nodeId+"-sup-num");
-    supNum.innerHTML = supporterNum;
+    supNum.innerHTML = node.supporterNum;
 }
 
 function addMember(id,type){

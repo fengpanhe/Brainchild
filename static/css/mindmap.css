@@ -9,13 +9,6 @@
     max-width: 380px;
     position: absolute;
     font-family: "Hiragino Sans GB", "Microsoft YaHei","WenQuanYi Micro Hei", sans-serif;
-    z-index: 200;
-}
-svg{
-    z-index: 100;
-}
-.info-div{
-    z-index: 50;
 }
 .node-title-container{
     position: relative;

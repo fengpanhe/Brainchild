@@ -212,7 +212,6 @@ nav a{
     transition: all 0.2s;
     box-shadow: 0 0px 7px #afafaf;
 
-    z-index: 250;
 }
 .mindmap-func:hover{
     background-color: rgb(215,66,72);
@@ -243,7 +242,13 @@ svg{
 .message{
     /*display: hidden;*/
 }
-
+/*层级结构*/
+nav{z-index: 200;}
+#working-area{z-index: 10;}
+#mindmap-func{z-index: 150;}
+.info-div{z-index: 160;}
+svg{z-index: 140;}
+.node-container{z-index: 149;}
 @media (max-width: 756px){
     /*在小尺寸屏幕上导航栏重布局*/
     nav{
@@ -254,12 +259,10 @@ svg{
         box-sizing: border-box;
         border-bottom: 1px solid rgb(236, 237, 240);
         transition: all 0.2s;
-        z-index: 200;
     }
     #working-area{
         position: absolute;
         top: 60px;
-        z-index: 199;
     }
     nav.expand{
     /*nav:hover{*/
