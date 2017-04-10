@@ -89,8 +89,10 @@ function initRoom(){
         mindmap.ownerDocument.defaultView.innerWidth = mindmap.offsetWidth;
         var top = mindmap.style.top;
         var left = mindmap.style.left;
+        var transform = mindmap.style.transform;
         mindmap.style.top = 0 - ideaNodeMarginTop + "px";
         mindmap.style.left = 0 + ideaNodeMarginRight + "px";
+        mindmap.style.transform = "scale(1,1)";
         html2canvas(mindmap,{
             // height: mindmap.offsetHeight,width: mindmap.offsetWidth})
             })
@@ -109,6 +111,7 @@ function initRoom(){
                 mindmap.ownerDocument.defaultView.innerWidth = w;
                 mindmap.style.top = top;
                 mindmap.style.left = left;
+                mindmap.style.transform = transform;
                 var src = canvas.toDataURL();
                 window.open(src);
             });
